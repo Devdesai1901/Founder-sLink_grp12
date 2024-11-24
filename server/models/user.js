@@ -11,6 +11,7 @@ const UserSchema = new mongoose.Schema({
   phoneNumber: { type: String, required: true },
   bio: { type: String }, // Optional bio
   profilePicture: { type: String }, // Optional URL to profile picture
+  is_online: { type: String, default: "0" },
   dateOfBirth: { type: Date, required: true },
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date, default: Date.now },

@@ -1,0 +1,192 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+  }
+  
+  .dashboard {
+    display: flex;
+    height: 100vh;
+  }
+  
+  .left-section {
+    flex: 7;
+    background-color: #f4f4f4;
+  }
+  
+  .right-section {
+    flex: 3;
+    background-color: #ffffff;
+    border-left: 1px solid #ddd;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .user-list {
+    flex: 1;
+    overflow-y: auto;
+    padding: 10px;
+  }
+  
+  .user-item {
+    display: flex;
+    align-items: center;
+    margin: 10px 0;
+    cursor: pointer;
+    padding: 5px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+  }
+  
+  .user-item img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin-right: 10px;
+  }
+  
+  .chat-window {
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    width: 30%;
+    height: 50%;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 5px 5px 0 0;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .chat-window.hidden {
+    display: none;
+  }
+  
+  .chat-header {
+    padding: 10px;
+    background-color: #007bff;
+    color: #fff;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .chat-messages {
+    flex: 1;
+    overflow-y: auto;
+    padding: 10px;
+  }
+  
+  .chat-input {
+    display: flex;
+    padding: 10px;
+    border-top: 1px solid #ddd;
+  }
+  
+  .chat-input input {
+    flex: 1;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+  }
+  
+  .chat-input button {
+    margin-left: 5px;
+    padding: 10px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+
+  .online-status{
+    color: green;
+  }
+  
+  .offline-status{
+    color: red;
+  }
+
+  .current-user-chat{
+    text-align: right;
+    margin: 10px;
+    color: black;
+  }
+  
+  /* Chat container styles for layout consistency */
+.chat-container {
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
+}
+
+
+/* Ensure proper layout for chat messages */
+.chat-messages {
+  overflow-y: auto; /* Enable vertical scrolling */
+  max-height: 500px; /* Limit the height */
+  padding: 10px;
+  background-color: #fafafa; /* Subtle background color */
+  border: 1px solid #ddd; /* Border for separation */
+  border-radius: 10px; /* Rounded edges for container */
+  display: flex;
+  flex-direction: column; /* Stack messages vertically */
+  gap: 10px; /* Space between messages */
+}
+
+/* Current user's chat bubble */
+.current-user-chat {
+  align-self: flex-start; /* Align to the left */
+  background-color: #007bff; /* Blue bubble for the sender */
+  color: white; /* White text for better readability */
+  padding:  10px 15px;
+  border-radius: 15px 15px 15px 0;
+  max-width: 60%; /* Limit the width */
+  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+  font-size: 14px;
+  word-wrap: break-word;
+  display: inline-block;
+}
+
+/* Distant user's chat bubble */
+.distance-user-chat {
+  align-self: flex-end; /* Align to the right */
+  background-color: #f1f1f1; /* Light gray bubble for the recipient */
+  color: #333; /* Dark text for readability */
+  padding: 10px 15px;
+  border-radius: 15px 15px 15px 0;
+  max-width: 60%;
+  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+  font-size: 14px;
+  word-wrap: break-word;
+  display: inline-block;
+}
+
+/* Chat bubble animations for smoother UI */
+.current-user-chat,
+.distance-user-chat {
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsive adjustments for smaller screens */
+@media (max-width: 600px) {
+  .current-user-chat,
+  .distance-user-chat {
+    max-width: 80%;
+    font-size: 12px;
+  }
+}

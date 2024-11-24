@@ -1,11 +1,12 @@
-import founderPaths from "./InvestorPath.js";
-import investorPaths from "./foundersPath.js";
-
+import investorPaths from "./investorPath.js";
+import founderPaths from "./foundersPath.js";
+import chatPaths from "./chatPath.js";
 const constructorMethod = (app) => {
   app.use("/founder", founderPaths);
   app.use("/investor", investorPaths);
+  app.use("/save-chat", chatPaths);
   app.use("*", (req, res) => {
-    res.status(404);
+    return res.status(404).json({ error: "page not fount" });
   });
 };
 

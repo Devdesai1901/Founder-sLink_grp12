@@ -9,23 +9,58 @@ const dbURI = "mongodb://localhost:27017/founderslink";
 // Sample data to insert
 const sampleUsers = [
   {
-    firstName: "John",
-    lastName: "Doe",
+    firstName: "Dev",
+    lastName: "Desai",
     email: "john.doe@example.com",
     password: "password123", // You should hash the password in production
     userType: "Founder",
     phoneCode: "+1",
     phoneNumber: "1234567890",
+    is_online: "0",
     dateOfBirth: new Date("1985-06-15"),
   },
   {
-    firstName: "Jane",
-    lastName: "Smith",
+    firstName: "Rushi",
+    lastName: "Parikh",
+    email: "dev@example.com",
+    password: "password123", // You should hash the password in production
+    userType: "Founder",
+    phoneCode: "+1",
+    phoneNumber: "1234567890",
+    is_online: "0",
+    dateOfBirth: new Date("1985-06-15"),
+  },
+  {
+    firstName: "Nakshatra",
+    lastName: "Desai",
+    email: "stevens@example.com",
+    password: "password123", // You should hash the password in production
+    userType: "Founder",
+    phoneCode: "+1",
+    phoneNumber: "1234567890",
+    is_online: "0",
+    dateOfBirth: new Date("1985-06-15"),
+  },
+  {
+    firstName: "Aadam",
+    lastName: "gandhi",
     email: "jane.smith@example.com",
     password: "password123", // Hash in production
     userType: "Investor",
     phoneCode: "+1",
     phoneNumber: "0987654321",
+    is_online: "0",
+    dateOfBirth: new Date("1990-09-25"),
+  },
+  {
+    firstName: "Panth",
+    lastName: "shah",
+    email: "panth.smith@example.com",
+    password: "password123", // Hash in production
+    userType: "Investor",
+    phoneCode: "+1",
+    phoneNumber: "0987654321",
+    is_online: "0",
     dateOfBirth: new Date("1990-09-25"),
   },
 ];
