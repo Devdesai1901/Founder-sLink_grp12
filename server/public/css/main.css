@@ -171,6 +171,55 @@ body {
   animation: fadeIn 0.3s ease-in-out;
 }
 
+
+
+
+
+
+.profile-banner {
+  background: linear-gradient(to right, #007bff, #0056b3);
+  color: white;
+  padding: 30px 15px;
+  text-align: center;
+}
+
+.profile-banner img {
+  width: 150px;
+  height: 150px;
+  object-fit: cover;
+  border-radius: 50%;
+  border: 4px solid white;
+}
+
+.section-title {
+  margin-top: 20px;
+  margin-bottom: 10px;
+  font-weight: bold;
+}
+
+.card {
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  border: none;
+  margin-bottom: 20px;
+}
+
+.social-links a {
+color:white; /* Bootstrap primary color */
+text-decoration: none;
+font-size: 16px;
+margin-right: 15px; /* Add space between links */
+}
+
+.social-links a:hover {
+color: #0056b3; /* Darker shade for hover */
+text-decoration: underline; /* Underline on hover for clarity */
+}
+
+canvas {
+display: block;
+margin: 0 auto;
+}
+
 @keyframes fadeIn {
   from {
     opacity: 0;

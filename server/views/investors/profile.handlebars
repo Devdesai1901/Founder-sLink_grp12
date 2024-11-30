@@ -1,0 +1,121 @@
+<!-- Profile Banner -->
+<div class="profile-banner">
+    {{!-- <h1>{{investor.userId.firstName}} {{investor.userId.lastName}} - Investor Profile</h1> --}}
+    <p class="mb-0">Investor Type: <strong>{{investor.investorType}}</strong></p>
+    <p class="mt-2">
+        {{#if investor.socialLinks.website}}
+            <a href="{{investor.socialLinks.website}}" target="_blank">Website</a>
+        {{/if}}
+        {{#if investor.socialLinks.linkedIn}}
+            <a href="{{investor.socialLinks.linkedIn}}" target="_blank">LinkedIn</a>
+        {{/if}}
+        {{#if investor.socialLinks.twitter}}
+            <a href="{{investor.socialLinks.twitter}}" target="_blank">Twitter</a>
+        {{/if}}
+    </p>
+</div>
+
+<!-- Main Content -->
+<div class="container my-4">
+    <div class="row">
+        <!-- Left Column -->
+        <div class="col-md-4">
+            <!-- About Section -->
+            <div class="card p-3">
+                <h5>About the Investor</h5>
+                <p>{{investor.description}}</p>
+            </div>
+
+            <!-- Investment Preferences -->
+            <div class="card p-3">
+                <h5>Investment Preferences</h5>
+                <ul>
+                    <li><strong>Industries:</strong> 
+                        {{#if investor.investmentPreferences.industries.length}}
+                            {{#each investor.investmentPreferences.industries}}
+                                {{this}}{{#unless @last}}, {{/unless}}
+                            {{/each}}
+                        {{else}}No industries specified{{/if}}
+                    </li>
+                    <li><strong>Funding Stages:</strong>
+                        {{#if investor.investmentPreferences.fundingStages.length}}
+                            {{#each investor.investmentPreferences.fundingStages}}
+                                {{this}}{{#unless @last}}, {{/unless}}
+                            {{/each}}
+                        {{else}}No funding stages specified{{/if}}
+                    </li>
+                    <li><strong>Geographic Preferences:</strong>
+                        {{#if investor.investmentPreferences.geographicPreferences.length}}
+                            {{#each investor.investmentPreferences.geographicPreferences}}
+                                {{this}}{{#unless @last}}, {{/unless}}
+                            {{/each}}
+                        {{else}}No geographic preferences specified{{/if}}
+                    </li>
+                    <li><strong>Minimum Investment Amount:</strong> ${{investor.investmentPreferences.minimumInvestmentAmount}}</li>
+                    <li><strong>Preferred Startup Size:</strong> {{investor.investmentPreferences.preferredStartupSize}}</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Right Column -->
+        <div class="col-md-8">
+            <!-- Contact Information Section -->
+            <div class="card p-3">
+                <h5>Contact Information</h5>
+                <ul>
+                    <li><strong>Email:</strong> {{investor.contactInformation.email}}</li>
+                    <li><strong>Phone:</strong> {{investor.contactInformation.phone}}</li>
+                    <li><strong>Preferred Contact Method:</strong> {{investor.contactInformation.preferredContactMethod}}</li>
+                </ul>
+            </div>
+
+            <!-- Portfolio Section -->
+            <div class="card p-3">
+                <h5>Investment Portfolio</h5>
+                {{#if investor.portfolio.length}}
+                    {{#each investor.portfolio}}
+                        <div class="investment">
+                            <p><strong>Startup:</strong> {{this.startupId.name}}</p>
+                            <p><strong>Amount Invested:</strong> ${{this.amountInvested}}</p>
+                            <p><strong>Equity Owned:</strong> {{this.equityOwned}}%</p>
+                            <p><strong>Exit Date:</strong> {{this.exitDate}}</p>
+                            <p><strong>Exit Amount:</strong> ${{this.exitAmount}}</p>
+                        </div>
+                    {{/each}}
+                {{else}}
+                    <p>No investments yet.</p>
+                {{/if}}
+            </div>
+
+            <!-- Performance Metrics Section -->
+            <div class="card p-3">
+                <h5>Performance Metrics</h5>
+                <ul>
+                    <li><strong>Total Invested:</strong> ${{investor.performanceMetrics.totalInvested}}</li>
+                    <li><strong>Returns Generated:</strong> ${{investor.performanceMetrics.returnsGenerated}}</li>
+                    <li><strong>Active Deals:</strong> {{investor.performanceMetrics.activeDeals}}</li>
+                    <li><strong>Portfolio Value:</strong> ${{investor.performanceMetrics.portfolioValue}}</li>
+                </ul>
+            </div>
+
+            <!-- Social Links Section -->
+            <div class="card p-3">
+                <h5>Social Links</h5>
+                <ul class="social-links">
+                    {{#if investor.socialLinks.website}}
+                        <li><a href="{{investor.socialLinks.website}}" target="_blank">Website</a></li>
+                    {{/if}}
+                    {{#if investor.socialLinks.linkedIn}}
+                        <li><a href="{{investor.socialLinks.linkedIn}}" target="_blank">LinkedIn</a></li>
+                    {{/if}}
+                    {{#if investor.socialLinks.twitter}}
+                        <li><a href="{{investor.socialLinks.twitter}}" target="_blank">Twitter</a></li>
+                    {{/if}}
+                    {{#if investor.socialLinks.personalBlog}}
+                        <li><a href="{{investor.socialLinks.personalBlog}}" target="_blank">Blog</a></li>
+                    {{/if}}
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>

@@ -3,8 +3,38 @@ import investorMethods from "../controllers/investor/investorData.js";
 import validation from "../utils/validation.js";
 const router = Router();
 
-router.route("/").get().post().put();
+// epute to get all the list of the founder
+router.route("/getList").get(async (req, res) => {
+  try {
+    const investor = await investorMethods.getAllInvestor();
+    return res.status(200).json(investor);
+  } catch (e) {
+    return res.status(400).json({ error: "unable to fetch data" });
+  }
+});
 
+//route  to get all the data of Investor from Investor Table
+router
+  .route("/:id")
+  .get(async (req, res) => {
+    try {
+      const userId = req.params.id;
+
+      validation.checkId(userId);
+      const investor = await investorMethods.getInvestorFromInvestorById(
+        userId
+      );
+      res.render("investors/profile", { investor });
+    } catch (e) {
+      return res
+        .status(400)
+        .json({ error: "error in rendring Investor profile page" });
+    }
+  })
+  .post()
+  .put();
+
+//route  to get all the data of User from User Table
 router.route("/dashboard/:id").get(async (req, res) => {
   try {
     const userId = req.params.id;
@@ -15,16 +45,9 @@ router.route("/dashboard/:id").get(async (req, res) => {
     res.cookie("lastName", uniqueUser.lastName);
     res.render("common/dashboard");
   } catch (e) {
-    return res.status(400).json({ error: "error in rendring page" });
-  }
-});
-
-router.route("/getList").get(async (req, res) => {
-  try {
-    const investor = await investorMethods.getAllInvestor();
-    return res.status(200).json(investor);
-  } catch (e) {
-    return res.status(400).json({ error: "unable to fetch data" });
+    return res
+      .status(400)
+      .json({ error: "error in rendring  investor dashboard page" });
   }
 });
 

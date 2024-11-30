@@ -30,7 +30,20 @@ app.use("/public", express.static("public"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 //app.use(rewriteUnsupportedBrowserMethods);
-app.engine("handlebars", exphbs.engine({ defaultLayout: "main" }));
+const hbs = exphbs.create({
+  defaultLayout: "main",
+  extname: "handlebars",
+  helpers: {
+    json: (context) => JSON.stringify(context),
+    formatDate: (date) => new Date(date).toLocaleDateString(),
+  },
+
+  runtimeOptions: {
+    allowProtoPropertiesByDefault: true,
+    allowProtoMethodsByDefault: true,
+  },
+});
+app.engine("handlebars", hbs.engine);
 app.set("view engine", "handlebars");
 
 // config routes

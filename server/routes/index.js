@@ -6,7 +6,7 @@ const constructorMethod = (app) => {
   app.use("/investor", investorPaths);
   app.use("/save-chat", chatPaths);
   app.use("*", (req, res) => {
-    return res.status(404).json({ error: "page not fount" });
+    return res.status(404).json({ error: "page not found" });
   });
 };
 

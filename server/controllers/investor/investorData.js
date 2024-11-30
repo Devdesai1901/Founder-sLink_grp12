@@ -1,6 +1,7 @@
 import { ObjectId } from "mongodb";
 import User from "../../models/user.js";
 import validation from "../../utils/validation.js";
+import Investor from "../../models/investor.js";
 let exprtedMethod = {
   async getInvestorById(id) {
     validation.checkId(id);
@@ -10,10 +11,17 @@ let exprtedMethod = {
     return user;
   },
 
+  async getInvestorFromInvestorById(id) {
+    validation.checkId(id);
+    const objectId = new ObjectId(id);
+    const user = await Investor.findOne({ userId: objectId });
+    if (!user) throw "User Not found";
+    return user;
+  },
   async getAllInvestor() {
-    const founders = await User.find({ userType: "Investor" });
-    if (!founders) throw "User Not found";
-    return founders;
+    const investor = await User.find({ userType: "Investor" });
+    if (!investor) throw "User Not found";
+    return investor;
   },
 };
 
