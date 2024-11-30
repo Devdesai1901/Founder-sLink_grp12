@@ -126,7 +126,6 @@ $("#chat-form").submit(function (event) {
 
   let message = $("#messageInput").val();
   message = message.trim();
-  console.log(message.length);
   if (message.length !== 0) {
     $.ajax({
       url: "/save-chat/",
@@ -159,8 +158,6 @@ $("#chat-form").submit(function (event) {
 
 // broadcasting  chat to other side  user
 socket.on("loadNewChat", function (data) {
-  console.log(data);
-
   if (userId === data.receiver_id && reciver_id === data.sender_id) {
     let html = `<div class="distance-user-chat" id="distance-user-chat">
     <h5> 

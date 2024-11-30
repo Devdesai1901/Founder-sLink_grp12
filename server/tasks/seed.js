@@ -67,31 +67,83 @@ const sampleUsers = [
 
 const sampleFounders = [
   {
-    userId: null, // Will be set after creating the User
+    userId: null,
     startupName: "Tech Innovators",
     startupIndustry: "Technology",
     companyDescription: "An innovative startup focusing on AI technology.",
     establishYear: 2021,
     fundingStage: "Seed",
     amountToRaiseFund: 500000,
-    pitchDescription: "Looking for investors to scale up our AI research.",
     posts: [
       {
-        pitchTitle: "AI Startup Pitch",
-        pitchDescription: "Seeking funds to expand AI research.",
+        pitchTitle: "AI Research for the Future",
+        pitchDescription: "Looking for investors to scale up our AI research.",
         industry: "Technology",
         fundingStage: "Seed",
-        amountRequired: 300000,
-        investorsInterested: [],
+        amountRequired: 200000,
+        investorsInterested: [
+          "603d2f7177d24f372c26f9e4",
+          "603d2f7177d24f372c26f9e5",
+        ],
+        likes: 150,
       },
     ],
     coFounders: [
       {
-        firstName: "Alice",
-        lastName: "Johnson",
-        email: "alice.johnson@example.com",
+        firstName: "John",
+        lastName: "Doe",
+        email: "john.doe@example.com",
       },
     ],
+    numberOfEmployees: 10,
+    financialDetails: {
+      totalAddressableMarket: 100000000,
+      serviceableAvailableMarket: 50000000,
+      totalCompanyReserves: 1000000,
+      companySpent: {
+        salaries: 200000,
+        marketingCost: 50000,
+        productRnD: 100000,
+        miscellaneous: 20000,
+      },
+      revenueHistory: [
+        { year: 2021, revenue: 1000000 },
+        { year: 2022, revenue: 2500000 },
+      ],
+      equityDilutionHistory: [
+        { year: 2022, dilutionPercentage: 5, nameOfInvestor: "Investor One" },
+        { year: 2023, dilutionPercentage: 3, nameOfInvestor: "Investor Two" },
+      ],
+    },
+    majorCompetitors: ["AI Labs", "Tech Giants"],
+    milestones: [
+      {
+        milestoneName: "Product Launch",
+        dateAchieved: "2023-05-01T00:00:00.000Z",
+        description: "Launched the first version of the product.",
+      },
+      {
+        milestoneName: "Funding Secured",
+        dateAchieved: "2023-07-01T00:00:00.000Z",
+        description: "Raised $1M in seed funding.",
+      },
+    ],
+    keyMetrics: {
+      valuation: 5000000,
+      profitMargin: 20,
+      totalFundingReceived: 1000000,
+      teamSize: 10,
+    },
+    traction: {
+      monthlyActiveUsers: 5000,
+      customerRetentionRate: 85,
+      annualRecurringRevenue: 100000,
+    },
+    socialLinks: {
+      website: "https://techinnovators.com",
+      linkedIn: "https://linkedin.com/company/techinnovators",
+      twitter: "https://twitter.com/techinnovators",
+    },
   },
 ];
 
