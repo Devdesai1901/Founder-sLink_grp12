@@ -39,10 +39,13 @@ router.route("/dashboard/:id").get(async (req, res) => {
   try {
     const userId = req.params.id;
     validation.checkId(userId);
-    const uniqueUser = await investorMethods.getInvestorById(userId);
+    let uniqueUser = await investorMethods.getInvestorById(userId);
     res.cookie("role", uniqueUser.userType);
     res.cookie("firstName", uniqueUser.firstName);
     res.cookie("lastName", uniqueUser.lastName);
+    uniqueUser._id = uniqueUser._id.toString();
+    res.cookie("id", JSON.stringify(uniqueUser._id));
+
     res.render("common/dashboard");
   } catch (e) {
     return res

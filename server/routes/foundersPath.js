@@ -36,10 +36,14 @@ router.route("/dashboard/:id").get(async (req, res) => {
   try {
     const userId = req.params.id;
     validation.checkId(userId);
-    const uniqueUser = await founderMethods.getFounderById(userId);
+    let uniqueUser = await founderMethods.getFounderById(userId);
     res.cookie("role", uniqueUser.userType);
     res.cookie("firstName", uniqueUser.firstName);
     res.cookie("lastName", uniqueUser.lastName);
+    res.cookie("email", uniqueUser.email);
+
+    uniqueUser._id = String(uniqueUser._id);
+    res.cookie("id", JSON.stringify(uniqueUser._id));
     res.render("common/dashboard");
   } catch (e) {
     return res

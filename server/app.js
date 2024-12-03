@@ -53,7 +53,7 @@ configRoutes(app);
 const server = http.createServer(app);
 const io = new Server(server);
 var usp = io.of("/user-namespace");
-
+let userSocketMap = {};
 // code for online offline status update
 usp.on("connection", async function (socket) {
   let userId = socket.handshake.auth.token;
