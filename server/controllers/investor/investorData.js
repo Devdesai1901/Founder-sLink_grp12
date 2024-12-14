@@ -23,6 +23,31 @@ let exprtedMethod = {
     if (!investor) throw "User Not found";
     return investor;
   },
+
+  async getAllInvestorDetails() {
+    const investor = await this.getAllInvestor();
+    const investorDetails = await Investor.find();
+
+    if (!investorDetails) throw "Investor Details Not found";
+
+    const investorData = [];
+
+    investor.forEach((user) => {
+      investorDetails.forEach((userDetails) => {
+        if (user._id.toString() === userDetails.userId.toString()) {
+          investorData.push({
+            id: user._id,
+            firstname: user.firstName,
+            LastName: user.lastName,
+            email: user.email,
+            industry: userDetails.investorType,
+            description: userDetails.description,
+          });
+        }
+      });
+    });
+    return investorData;
+  },
 };
 
 export default exprtedMethod;

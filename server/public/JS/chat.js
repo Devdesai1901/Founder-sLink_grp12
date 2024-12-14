@@ -1,5 +1,7 @@
 const role = getCookie("role");
-
+let id = getCookie("id");
+const sanitizedUserId = id.replace(/^"|"$/g, "");
+console.log(sanitizedUserId);
 // event listnet to  trigeer the main function
 document.addEventListener("DOMContentLoaded", async () => {
   // Call fetchUsers to populate the user list
@@ -19,7 +21,7 @@ function getCookie(name) {
 // taking the login user id from the url
 const path = window.location.pathname;
 const segments = path.split("/");
-const userId = segments[segments.length - 1];
+const userId = sanitizedUserId || segments[segments.length - 1];
 
 // reciver id
 let reciver_id;
@@ -412,7 +414,6 @@ document.addEventListener("DOMContentLoaded", () => {
       const uniqueUserId = startVcButton.getAttribute("data-unique-user-id");
 
       let uniqueMeetId = uniqueUserId + userId;
-      console.log(uniqueMeetId);
       const sortedUniqueMeetId = uniqueMeetId.split("").sort().join("");
 
       try {
@@ -425,7 +426,10 @@ document.addEventListener("DOMContentLoaded", () => {
           // Render the video.handlebars page
           const pageHtml = await response.text();
           document.body.innerHTML = pageHtml;
-          setTimeout(() => initializeVideoPage(sortedUniqueMeetId), 1000);
+          setTimeout(
+            () => initializeVideoPage(sortedUniqueMeetId, uniqueUserId),
+            1000
+          );
           // Call init() after the page is loaded
         } else {
           console.error("Failed to load video call page:", response.statusText);
@@ -437,7 +441,7 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 });
 
-function initializeVideoPage(uniqueMeetId) {
+function initializeVideoPage(uniqueMeetId, uniqueUserId) {
   console.log("Initializing video page with Meeting ID:", uniqueMeetId);
 
   // Attach event listeners after confirming elements exist
@@ -454,7 +458,13 @@ function initializeVideoPage(uniqueMeetId) {
   if (leaveButton) {
     leaveButton.addEventListener("click", leaveChannel);
   }
-
+  const callerName = "Your Name";
+  socket.emit("callUser", {
+    meetId: uniqueMeetId,
+    callerId: userId,
+    recipientId: uniqueUserId,
+    callerName: callerName,
+  });
   // Call the init function with the unique meet ID
   init(uniqueMeetId);
 }

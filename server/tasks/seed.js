@@ -78,7 +78,6 @@ const sampleFounders = [
       {
         pitchTitle: "AI Research for the Future",
         pitchDescription: "Looking for investors to scale up our AI research.",
-        industry: "Technology",
         fundingStage: "Seed",
         amountRequired: 200000,
         investorsInterested: [

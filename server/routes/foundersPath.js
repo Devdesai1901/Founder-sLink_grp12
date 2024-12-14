@@ -3,6 +3,59 @@ import founderMethods from "../controllers/founder/founderData.js";
 import validation from "../utils/validation.js";
 const router = Router();
 
+router
+  .route("/pitchform")
+  .get(async (req, res) => {
+    res.render("founders/pitchform");
+  })
+  .post(async (req, res) => {
+    try {
+      let { pitchTitle, pitchDescription, fundingStage, amountRequired } =
+        req.body;
+      let userId = req.query.userId;
+      userId = userId.replace(/^"|"$/g, "");
+      userId = validation.checkId(userId, "userId");
+      pitchDescription = validation.checkString(
+        pitchDescription,
+        "pitchDescription"
+      );
+      validation.checkLenCharacters(
+        pitchDescription,
+        "pitchDescription",
+        100,
+        20000
+      );
+      pitchTitle = validation.checkString(pitchTitle, "pitchTitle");
+      validation.checkLenCharacters(pitchTitle, "pitchTitle", 5, 50);
+      pitchDescription = validation.checkString(
+        pitchDescription,
+        "pitchDescription"
+      );
+      validation.checkLenCharacters(
+        pitchDescription,
+        "pitchDescription",
+        100,
+        20000
+      );
+      fundingStage = validation.checkFundingStage(fundingStage, "fundingStage");
+      amountRequired = validation.checkAmount(amountRequired, "amountRequired");
+
+      const newpost = await founderMethods.createPost(
+        userId,
+        pitchTitle,
+        pitchDescription,
+        fundingStage,
+        amountRequired
+      );
+      if (newpost.poststatus) {
+        return res.status(200).json(newpost);
+      } else {
+        return res.status(400).json({ error: "Unable to save the post" });
+      }
+    } catch (e) {
+      return res.status(400).json({ error: "Unable to upload the post" });
+    }
+  });
 // get the all list of users who are founders
 router.route("/getList").get(async (req, res) => {
   try {
