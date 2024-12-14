@@ -192,7 +192,7 @@ socket.on("loadChats", function (data) {
 });
 
 // copy app ID from Agora.io
-let APP_ID = "";
+let APP_ID = "2a53b2e92b544186a80e69d842b35ee7";
 
 let token = null;
 let uid = userId;
