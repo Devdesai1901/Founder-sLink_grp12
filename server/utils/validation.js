@@ -22,6 +22,16 @@ const exportedMethod = {
     return boolVal;
   },
 
+  //check input length
+  checkLenCharacters(input, fieldName, min, max) {
+    if (input.length < min || input.length > max) {
+      throw new Error(
+        `${fieldName} must be between ${min} and ${max} characters long`
+      );
+    }
+    return input;
+  },
+
   //check number
   checkNumber(test, varName) {
     //if (!test) throw `Error: You must provide a ${varName}`;
@@ -32,6 +42,35 @@ const exportedMethod = {
     return test;
   },
 
+  checkAmount(amount) {
+    // Convert the string to a number
+    const number = Number(amount);
+
+    // Check if the conversion is successful
+    if (isNaN(number)) {
+      throw new Error("Invalid amount. Please enter a valid number.");
+    }
+
+    // Ensure the number is greater than or equal to 10,000
+    if (number < 10000) {
+      throw new Error("Amount must be greater than or equal to 10,000.");
+    }
+
+    // Round up the number to the nearest whole value
+    const roundedNumber = Math.ceil(number);
+
+    return roundedNumber;
+  },
+  checkFundingStage(fundingStage) {
+    fundingStage = this.checkString(fundingStage, "fundingStage");
+    const allowedStages = ["Seed", "Series A", "Series B", "IPO"];
+    if (!allowedStages.includes(fundingStage)) {
+      throw new Error(
+        "Invalid funding stage. Allowed values are: Seed, Series A, Series B, IPO."
+      );
+    }
+    return fundingStage;
+  },
   //check id
   checkId(id, varName) {
     if (!id) throw `Error: You must provide a ${varName}`;

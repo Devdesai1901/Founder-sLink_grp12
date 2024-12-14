@@ -4,6 +4,11 @@ body {
     padding: 0;
   }
   
+  html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+  }
 
 
   /* header start */
@@ -30,15 +35,19 @@ header .dropdown-menu {
 /* header ends */
 /* footer starts */
 /* Footer Styling */
-footer {
-    background-color: #f4f4f4;
-    padding: 20px;
-    font-size: 1rem;
-    color: #333;
+
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
 }
 
-footer p {
-    margin: 0;
+footer {
+  margin-top: auto;
+  background-color: #f8f9fa;
+  padding: 10px;
+  text-align: center;
+  width: 100%;
 }
 
 /* footer ends */
@@ -48,22 +57,23 @@ footer p {
   /* main dashboard  start*/
   .dashboard {
     display: flex;
-    height: 100vh;
+    height: 100%;
   }
   
-  .left-section {
-    flex: 7;
-    background-color: #f4f4f4;
-  }
   
-  .right-section {
-    flex: 3;
-    background-color: #ffffff;
-    border-left: 1px solid #ddd;
-    overflow-y: auto;
-    display: flex;
-    flex-direction: column;
-  }
+.left-section {
+  flex: 0 0 70%;
+  padding: 20px;
+  overflow-y: auto;
+}
+
+.right-section {
+  flex: 0 0 30%;
+  padding: 20px;
+  border-left: 1px solid #ddd;
+  overflow-y: auto;
+}
+
   
   .user-list {
     flex: 1;
@@ -385,4 +395,41 @@ cursor: pointer;
           width: 20px;
       }
 }
-/* Vedio call page css start*/
+/* Vedio call page css end*/
+
+
+/* feed css */
+
+/* public/css/main.css */
+.feed-container {
+  margin: 20px 0;
+}
+.feed-item {
+  margin-bottom: 20px; /* Creates a gap between feed items */
+  padding: 15px; /* Adds padding inside the feed item */
+  border: 1px solid #ccc; /* Optional: adds a border around the feed item */
+  border-radius: 8px; /* Optional: adds rounded corners */
+  background-color: #f9f9f9; /* Optional: sets a light background color */
+}
+.feed-item h3 {
+  margin-top: 0;
+}
+
+.feed-item p {
+  margin: 5px 0;
+}
+
+.post {
+  margin-bottom: 10px; /* Creates a gap between posts inside the same feed item */
+  padding: 10px; /* Adds padding inside each post */
+  border: 1px solid #ddd; /* Optional: adds a border around individual posts */
+  border-radius: 6px; /* Optional: adds rounded corners */
+  background-color: #ffffff; /* Optional: sets a background color for posts */
+}
+.post h4 {
+  margin: 0;
+}
+
+.post p {
+  margin: 5px 0;
+}

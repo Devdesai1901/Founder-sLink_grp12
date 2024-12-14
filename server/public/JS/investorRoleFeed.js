@@ -1,10 +1,27 @@
 document.addEventListener("DOMContentLoaded", function () {
-  const nameElement = document.getElementById("nameElementInvestor");
+  // Function to get the value of a specific cookie
+  function getCookie(name) {
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${name}=`);
+    if (parts.length === 2) return parts.pop().split(";").shift();
+  }
 
-  nameElement.addEventListener("click", function () {
-    const userId = nameElement.getAttribute("data-user-id");
+  const userRole = getCookie("role");
+  console.log("User Role:", userRole);
 
-    // Perform a GET request to navigate to the new page
-    window.location.href = `/investor/${userId}`;
-  });
+  if (userRole === "Founder") {
+    document.querySelectorAll("#nameElementInvestor").forEach((element) => {
+      element.addEventListener("click", function () {
+        const userId = element.getAttribute("data-user-id");
+        window.location.href = `/investor/${userId}`;
+      });
+    });
+  } else if (userRole === "Investor") {
+    document.querySelectorAll("#nameElement").forEach((element) => {
+      element.addEventListener("click", function () {
+        const userId = element.getAttribute("data-user-id");
+        window.location.href = `/founder/${userId}`;
+      });
+    });
+  }
 });
