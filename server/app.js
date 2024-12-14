@@ -9,7 +9,7 @@ import http from "http";
 import User from "../server/models/user.js";
 import chat from "../server/models/chat.js";
 import { ObjectId } from "mongodb";
-
+import cookieParser from "cookie-parser";
 // confing for dot file
 dotenv.config();
 
@@ -26,6 +26,7 @@ connectDB();
 // };
 
 // declaring stactic folder and setting handls configs
+app.use(cookieParser());
 app.use("/public", express.static("public"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
