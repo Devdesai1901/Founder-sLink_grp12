@@ -87,6 +87,7 @@ export const signInUser = async (email, password) => {
 
     // Return user details (excluding sensitive data like password)
     return {
+      id: user._id,
       firstName: user.firstName,
       lastName: user.lastName,
       email: user.email,

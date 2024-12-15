@@ -8,10 +8,10 @@ import User from '../models/user.js';
 
 const router = Router();
 
-
+// Route for landing page (uses layout in views/layouts)
 router.route("/").get((req, res) => {
     try {
-        res.render("landing"); 
+        res.render("landing"); // Render the `landing.handlebars` file from the layouts folder
     } catch (e) {
         return res.status(500).json({ error: "Unable to load landing page" });
     }
@@ -52,20 +52,23 @@ router
                 req.body.userType
             );
 
+
+                       
+            
             // Generate 2FA secret key for the user
-            const secret = speakeasy.generateSecret();
-            const userId = req.body.email;  // Or use a unique user ID from DB
-            // Store the secret in the user's database record
-            await User.updateOne({ email: req.body.email }, { $set: { twoFactorSecret: secret.base32 } });
+            // const secret = speakeasy.generateSecret();
+            // const userId = req.body.email;  // Or use a unique user ID from DB
+            // // Store the secret in the user's database record
+            // await User.updateOne({ email: req.body.email }, { $set: { twoFactorSecret: secret.base32 } });
 
-            // Generate QR code for the user to scan in their authenticator app
-            const qrCodeUrl = await qrcode.toDataURL(secret.otpauth_url);
+            // // Generate QR code for the user to scan in their authenticator app
+            // const qrCodeUrl = await qrcode.toDataURL(secret.otpauth_url);
 
-            if (signupCompleted) {
-                return res.render("auth/verify-2fa", { qrCodeUrl, email: req.body.email }); // Render 2FA verification page
-            } else {
-                return res.status(500).send("Internal Server Error");
-            }
+            // if (signupCompleted) {
+            //     return res.render("auth/verify-2fa", { qrCodeUrl, email: req.body.email }); // Render 2FA verification page
+            // } else {
+            //     return res.status(500).send("Internal Server Error");
+            // }
         } catch (e) {
             return res.status(400).render("auth/signup", { error: e.message }); // Use `auth/signup` path for rendering the signup page
         }
@@ -101,6 +104,7 @@ router
 
             // Store user information in session
             req.session.user = {
+                id:user.id,
                 firstName: user.firstName,
                 lastName: user.lastName,
                 email: user.email,
@@ -109,6 +113,7 @@ router
                 dateOfBirth: user.dateOfBirth,
                 userType: user.userType // Store the user type to redirect them accordingly
             };
+            
 
             //Adding Cookies
             res.cookie("role", user.userType);
@@ -117,7 +122,6 @@ router
             res.cookie("email", user.email);
             res.cookie("id", JSON.stringify(user.id));
             console.log(res.cookie);
-
             // Check if user has 2FA enabled
             if (user.twoFactorSecret) {
                 return res.render("auth/verify-2fa", { email: user.email }); // Prompt user for 2FA verification
