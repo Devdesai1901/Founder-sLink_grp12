@@ -1,111 +1,102 @@
-import User from '../models/userModel.js';
 import bcrypt from 'bcryptjs';
-import jwt from 'jsonwebtoken';
-import nodemailer from 'nodemailer';
 import dotenv from 'dotenv';
+import helper from "../utils/helper.js";
+import User from '../models/user.js';
 dotenv.config();
 
-const transporter = nodemailer.createTransport({
-  service: 'gmail',
-  auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS,
-  },
-});
 
-// Signup user
-export const signupUser = async (req, res) => {
-  const { firstName, lastName, email, password, userType, phoneCode, phoneNumber, dateOfBirth } = req.body;
+const rounds = 12;
 
-  // Password validation
-  const passwordRegex = /^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
-  if (!passwordRegex.test(password)) {
-    return res.status(400).render('auth/signup', { error: 'Password must be at least 8 characters long and include an uppercase letter, a number, and a special character.' });
-  }
-
+export const signUpUser = async (
+  firstName,
+  lastName,
+  email,
+  password,
+  phoneCode,
+  phoneNumber,
+  dateOfBirth,
+  userType
+) => {
   try {
-    // Check if user already exists
-    let user = await User.findOne({ email });
-    if (user) {
-      return res.status(400).render('auth/signup', { error: 'User already exists.' });
+    // Validate inputs using helper functions
+    firstName = helper.stringVerifyer("First Name", firstName, true, 2, 25);
+    lastName = helper.stringVerifyer("Last Name", lastName, true, 2, 25);
+    email = helper.emailVerifyer(email);
+    password = helper.stringVerifyer("Password", password, false, 8);
+    helper.passwordVerifyer(password);
+    phoneCode = helper.phoneCodeVerifyer(phoneCode);
+    phoneNumber = helper.phoneNumberVerifyer(phoneNumber);
+    dateOfBirth = helper.dateOfBirthVerifyer(dateOfBirth);
+    userType = helper.validValues("User Type", userType.toLowerCase(), "investor", "founder");
+
+    // Check if email already exists
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      throw new Error(`A user with this email already exists.`);
     }
 
+    // Hash the password
+    const hash = await bcrypt.hash(password, rounds);
+
     // Create a new user
-    const hashedPassword = await bcrypt.hash(password, 10);
-    user = new User({
+    const newUser = new User({
       firstName,
       lastName,
       email,
-      password: hashedPassword,
-      userType,
+      password: hash,
       phoneCode,
       phoneNumber,
       dateOfBirth,
-      verificationToken: jwt.sign({ email }, process.env.JWT_SECRET, { expiresIn: '1h' }),
+      userType 
     });
 
-    await user.save();
+    // Save the user to the database
+    const savedUser = await newUser.save();
+    if (!savedUser) {
+      throw new Error("Could not add user.");
+    }
 
-    // Send email verification
-    const verifyUrl = `http://localhost:3000/auth/verify/${user.verificationToken}`;
-    await transporter.sendMail({
-      to: email,
-      subject: 'Verify your email',
-      text: `Please verify your email by clicking on the following link: ${verifyUrl}`,
-    });
-
-    res.status(201).render('auth/signin', { success: 'Signup successful. Please check your email to verify your account.' });
+    return { signupCompleted: true };
   } catch (error) {
-    console.error(error);
-    res.status(500).render('auth/signup', { error: 'Server error.' });
+    throw new Error(`Error during signup: ${error.message}`);
   }
 };
 
-// Signin user
-export const signinUser = async (req, res) => {
-  const { email, password } = req.body;
 
+// Signin User
+export const signInUser = async (email, password) => {
   try {
+    // Validate inputs using helper functions
+    email = helper.emailVerifyer(email);
+    password = helper.stringVerifyer("Password", password, false, 8);
+    helper.passwordVerifyer(password);
+
+    // Find the user by email
     const user = await User.findOne({ email });
+    console.log(user)
+    
     if (!user) {
-      return res.status(400).render('auth/signin', { error: 'Invalid email or password.' });
+      throw new Error("Either the email or password is invalid.");
     }
 
-    const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) {
-      return res.status(400).render('auth/signin', { error: 'Invalid email or password.' });
+    // Compare the provided password with the stored hash
+    const match = await bcrypt.compare(password, user.password);
+    if (!match) {
+      throw new Error("Either the email or password is invalid.");
     }
 
-    if (!user.isEmailVerified) {
-      return res.status(400).render('auth/signin', { error: 'Please verify your email before logging in.' });
-    }
-
-    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
-    res.cookie('token', token, { httpOnly: true, secure: process.env.NODE_ENV === 'production' });
-    res.redirect('/dashboard');
+    // Return user details (excluding sensitive data like password)
+    return {
+      firstName: user.firstName,
+      lastName: user.lastName,
+      email: user.email,
+      phoneCode: user.phoneCode,
+      phoneNumber: user.phoneNumber,
+      dateOfBirth: user.dateOfBirth,
+      userType: user.userType,
+    };
   } catch (error) {
-    console.error(error);
-    res.status(500).render('auth/signin', { error: 'Server error.' });
+    throw new Error(`Error during signin: ${error.message}`);
   }
 };
 
-// Verify email
-export const verifyEmail = async (req, res) => {
-  const { token } = req.params;
-  try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    const user = await User.findOne({ email: decoded.email });
-    if (!user) {
-      return res.status(400).render('auth/signin', { error: 'Invalid token or user not found.' });
-    }
-
-    user.isEmailVerified = true;
-    user.verificationToken = null;
-    await user.save();
-
-    res.render('auth/signin', { success: 'Email verified successfully. You can now log in.' });
-  } catch (error) {
-    console.error(error);
-    res.status(400).render('auth/signin', { error: 'Invalid or expired token.' });
-  }
-};

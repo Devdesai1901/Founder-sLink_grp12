@@ -7,16 +7,16 @@ dotenv.config();
 const connectDB = async () => {
   try {
     // Connect to MongoDB using the URI from the environment variables
-    console.log(process.env.MONGO_URI);
-    if (!dbURI) {
-      throw new Error("MongoDB URI is not defined in the environment variables");
-    }
+    // console.log("MONGO_URI: ",process.env.MONGO_URI);
+    // if (!process.env.MONGO_URI) {
+    //   throw new Error("MongoDB URI is not defined in the environment variables");
+    // }
 
-    await mongoose.connect(dbURI, {
+    await mongoose.connect('mongodb://localhost:27017/founderslink', {
       useNewUrlParser: true,
-      useUnifiedTopology: true,
-      useCreateIndex: true, // Ensures unique indexes are created
+      useUnifiedTopology: true
     });
+
 
     console.log("MongoDB connected successfully");
   } catch (err) {
