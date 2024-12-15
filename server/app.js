@@ -1,44 +1,111 @@
 import express from "express";
 import connectDB from "./config/db.js";
-import mongoose from "mongoose";
 import dotenv from "dotenv";
 import exphbs from "express-handlebars";
 import configRoutes from "./routes/index.js";
 import { Server } from "socket.io";
 import http from "http";
-import User from "../server/models/user.js";
+import authRoutes from "./routes/authRoutes.js";
+import session from "express-session";
 import chat from "../server/models/chat.js";
 import { ObjectId } from "mongodb";
+
 import cookieParser from "cookie-parser";
 // confing for dot file
 dotenv.config();
 
-// conecting server and database
+// Create Express app
 const app = express();
+
+// Connect to the database
 connectDB();
 
-// const rewriteUnsupportedBrowserMethods = (req, res, next) => {
-//   if (req.body && req.body._method) {
-//     req.method = req.body._method;
-//     delete req.body._method;
-//   }
-//   next();
-// };
 
+// Middleware to serve static files
 // declaring stactic folder and setting handls configs
 app.use(cookieParser());
 app.use("/public", express.static("public"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-//app.use(rewriteUnsupportedBrowserMethods);
+
+app.use(session({
+  name: 'AuthenticationState',
+  secret: 'some secret string!',
+  resave: false,
+  saveUninitialized: false
+}));
+
+//SigInSignUp
+app.use('/', (req, res, next) => {
+  let authstate = req.session.user ? "Authenticated User" : "Non-Authenticated User";
+  console.log(`[${new Date().toUTCString()}]: ${req.method} ${req.originalUrl} (${authstate})`);
+  if(req.originalUrl === "/" && req.session.user && req.session.user.userType === "investor") {
+      return res.redirect("/investor");
+  }
+  if (req.originalUrl === "/" && req.session.user && req.session.user.userType === "founder") {
+      return res.redirect("/founder");
+  }
+  if (req.originalUrl === "/" && !req.session.user) {
+      return res.redirect("/signin");
+  }
+  if (req.originalUrl !== "/") {
+      next();
+  }
+});
+app.use('/signin', (req, res, next) =>{
+  if(req.method === "GET") {
+      if(req.session.user && req.session.user.userType === "investor"){
+          return res.redirect("/investor");
+      }
+      if(req.session.user && req.session.user.userType === "founder"){
+          return res.redirect("/founder");
+      }
+      next();
+  }
+  else{
+      next();
+  }
+});
+app.use('/signup', (req, res, next) =>{
+  if(req.method === "GET"){
+      if(req.session.user && req.session.user.userType === "investor"){
+          return res.redirect("/investor");
+      }
+      if(req.session.user && req.session.user.userType === "founder"){
+          return res.redirect("/founder");
+      }
+      next();
+  }
+  else {
+      next();
+  }
+});
+app.use('/signoutuser', (req, res, next) => {
+  if(req.method === "GET") {
+      if(!req.session.user) {
+          return res.redirect("/signin");
+      }
+
+      if(req.session.user) {
+          next();
+      }
+  }
+  else {
+      next();
+  }
+});
+
+
+
+// Handlebars view engine setup
 const hbs = exphbs.create({
-  defaultLayout: "main",
+  defaultLayout: "landing",
+  layoutsDir: "views",
   extname: "handlebars",
   helpers: {
     json: (context) => JSON.stringify(context),
     formatDate: (date) => new Date(date).toLocaleDateString(),
   },
-
   runtimeOptions: {
     allowProtoPropertiesByDefault: true,
     allowProtoMethodsByDefault: true,
@@ -46,24 +113,25 @@ const hbs = exphbs.create({
 });
 app.engine("handlebars", hbs.engine);
 app.set("view engine", "handlebars");
-
-// config routes
+app.use(authRoutes);
+// Setup routes
 configRoutes(app);
 
-// setting Socket.io
+// Set up Socket.io server for real-time communication
 const server = http.createServer(app);
 const io = new Server(server);
-var usp = io.of("/user-namespace");
+const usp = io.of("/user-namespace");
 let userSocketMap = {};
-// code for online offline status update
-usp.on("connection", async function (socket) {
-  let userId = socket.handshake.auth.token;
 
+usp.on("connection", async (socket) => {
+  let userId = socket.handshake.auth.token;
   userId = new ObjectId(userId);
+
   await User.findByIdAndUpdate({ _id: userId }, { $set: { is_online: "1" } });
   userId = userId.toString();
   socket.broadcast.emit("getOnlineUser", { user_id: userId });
-  socket.on("disconnect", async function () {
+
+  socket.on("disconnect", async () => {
     let userId = socket.handshake.auth.token;
     userId = new ObjectId(userId);
     await User.findByIdAndUpdate({ _id: userId }, { $set: { is_online: "0" } });
@@ -71,14 +139,12 @@ usp.on("connection", async function (socket) {
     socket.broadcast.emit("getOfflineUser", { user_id: userId });
   });
 
-  //chat broadcast implemetion
-  socket.on("newChat", function (data) {
+  socket.on("newChat", (data) => {
     socket.broadcast.emit("loadNewChat", data);
   });
 
-  //load old chats
-  socket.on("existsChat", async function (data) {
-    let oldChats = await chat.find({
+  socket.on("existsChat", async (data) => {
+    const oldChats = await chat.find({
       $or: [
         { sender_id: data.sender_id, receiver_id: data.receiver_id },
         { sender_id: data.receiver_id, receiver_id: data.sender_id },
@@ -91,6 +157,6 @@ usp.on("connection", async function (socket) {
 // Start the server
 const PORT = process.env.PORT || 5000;
 server.listen(PORT, () => {
-  console.log("We've now got a server!");
+  console.log("Server is running!");
   console.log(`Server running on port ${PORT}`);
 });

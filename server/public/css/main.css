@@ -433,3 +433,99 @@ cursor: pointer;
 .post p {
   margin: 5px 0;
 }
+
+/*  AUTH */
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  background-color: #038f61;
+  font-family: 'Times New Roman', Times, serif;
+  padding: 0;
+}
+h1{
+  background-color: #ecc238;
+  color: #b84343;
+  padding: 1rem;
+  text-align: center;
+}
+main {
+  padding: 2rem;
+}
+footer {
+  background-color: #2cf651;
+  color: #fff;
+  text-align: center;
+  padding: 1rem;
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+}
+.form-container {
+  max-width: 400px;
+  margin: 0 auto;
+  padding: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  background-color: #f9f9f9;
+}
+.error {
+  color: red;
+  font-weight: bold;
+}
+.light{
+  background-color: white;
+  color: black;
+}
+.dark{
+  background-color: black;
+  color: white;
+}
+body.dark a {
+  color: pink;
+}
+div#signinView, div#signupView, div#signoutView{
+  text-align: center;
+  text-decoration: wavy;
+  margin: auto;
+  background-color: #af3ee8;
+  padding: 10px;
+  width: 25%;
+  border: 5px solid;
+  border-color: palevioletred;
+}
+div#errorView{
+  text-align: center;
+  font-family: Georgia, 'Times New Roman', Times, serif;
+  text-emphasis-color: maroon;
+  background-color: #f3fbed;
+  margin: auto;
+  padding: 10px;
+  width: 25%;
+  border: 5px solid;
+  border-color: teal;
+}
+div#founderView {
+  text-align: center;
+  font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+  margin: auto;
+  padding: auto;
+  background-color: #aaf126;
+  border: 5px solid;
+  border-color: rgb(192, 51, 98);
+  width: 25%;
+}
+div#investorView {
+  text-align: center;
+  font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+  margin: auto;
+  padding: auto;
+  background-color: #c64614;
+  border: 5px solid;
+  border-color: fuchsia;
+  width: 25%;
+}
+footer {
+  text-align: center;
+  color: #eac925;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
