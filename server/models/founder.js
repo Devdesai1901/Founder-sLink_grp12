@@ -20,7 +20,6 @@ const FounderSchema = new mongoose.Schema({
     {
       pitchTitle: { type: String, required: true },
       pitchDescription: { type: String, required: true },
-      industry: { type: String, required: true },
       fundingStage: {
         type: String,
         enum: ["Seed", "Series A", "Series B", "IPO"],
