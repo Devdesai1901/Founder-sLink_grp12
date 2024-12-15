@@ -116,6 +116,7 @@ router
       res.cookie("lastName", user.lastName);
       res.cookie("email", user.email);
       res.cookie("id", JSON.stringify(user.id));
+      console.log(res.cookie);
       if (user.userType === "investor") {
         return res.redirect("/investor/dashboard");
       } else {

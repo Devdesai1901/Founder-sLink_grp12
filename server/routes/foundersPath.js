@@ -34,24 +34,7 @@ router.route("/dashboard/").get(async (req, res) => {
   }
 });
 
-// route to just get the Founders Data from Founders Table
-router
-  .route("/:id")
-  .get(async (req, res) => {
-    try {
-      const userId = req.params.id;
-      console.log(userId);
-      validation.checkId(userId);
-      const founder = await founderMethods.getFounderFromFounderById(userId);
-      res.render("founders/profile", { founder });
-    } catch (e) {
-      return res
-        .status(400)
-        .json({ error: "error in rendring founder profile page" });
-    }
-  })
-  .post()
-  .put();
+//route to get to the pitch form
 router
   .route("/pitchform")
   .get(async (req, res) => {
@@ -105,5 +88,24 @@ router
       return res.status(400).json({ error: "Unable to upload the post" });
     }
   });
+
+// route to just get the Founders Data from Founders Table
+router
+  .route("/:id")
+  .get(async (req, res) => {
+    try {
+      const userId = req.params.id;
+      console.log(userId);
+      validation.checkId(userId);
+      const founder = await founderMethods.getFounderFromFounderById(userId);
+      res.render("founders/profile", { founder });
+    } catch (e) {
+      return res
+        .status(400)
+        .json({ error: "error in rendring founder profile page" });
+    }
+  })
+  .post()
+  .put();
 
 export default router;

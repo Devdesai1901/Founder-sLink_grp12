@@ -40,6 +40,11 @@ app.use(
   })
 );
 
+app.use((req, res, next) => {
+  console.log("Session:", req.session);
+  next();
+});
+
 //SigInSignUp
 app.use("/", (req, res, next) => {
   let authstate = req.session.user
@@ -114,6 +119,7 @@ app.use("/signoutuser", (req, res, next) => {
 // Handlebars view engine setup
 const hbs = exphbs.create({
   defaultLayout: "main",
+
   extname: "handlebars",
   helpers: {
     json: (context) => JSON.stringify(context),
