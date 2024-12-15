@@ -1,9 +1,8 @@
-import bcrypt from 'bcryptjs';
-import dotenv from 'dotenv';
+import bcrypt from "bcryptjs";
+import dotenv from "dotenv";
 import helper from "../utils/helper.js";
-import User from '../models/user.js';
+import User from "../models/user.js";
 dotenv.config();
-
 
 const rounds = 12;
 
@@ -27,7 +26,12 @@ export const signUpUser = async (
     phoneCode = helper.phoneCodeVerifyer(phoneCode);
     phoneNumber = helper.phoneNumberVerifyer(phoneNumber);
     dateOfBirth = helper.dateOfBirthVerifyer(dateOfBirth);
-    userType = helper.validValues("User Type", userType.toLowerCase(), "investor", "founder");
+    userType = helper.validValues(
+      "User Type",
+      userType.toLowerCase(),
+      "investor",
+      "founder"
+    );
 
     // Check if email already exists
     const existingUser = await User.findOne({ email });
@@ -47,7 +51,7 @@ export const signUpUser = async (
       phoneCode,
       phoneNumber,
       dateOfBirth,
-      userType 
+      userType,
     });
 
     // Save the user to the database
@@ -62,7 +66,6 @@ export const signUpUser = async (
   }
 };
 
-
 // Signin User
 export const signInUser = async (email, password) => {
   try {
@@ -73,8 +76,7 @@ export const signInUser = async (email, password) => {
 
     // Find the user by email
     const user = await User.findOne({ email });
-    console.log(user)
-    
+
     if (!user) {
       throw new Error("Either the email or password is invalid.");
     }
@@ -87,6 +89,7 @@ export const signInUser = async (email, password) => {
 
     // Return user details (excluding sensitive data like password)
     return {
+      id: user._id,
       firstName: user.firstName,
       lastName: user.lastName,
       email: user.email,
@@ -99,4 +102,3 @@ export const signInUser = async (email, password) => {
     throw new Error(`Error during signin: ${error.message}`);
   }
 };
-

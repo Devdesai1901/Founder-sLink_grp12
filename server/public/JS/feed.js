@@ -1,4 +1,3 @@
-// public/JS/feed.js
 document.addEventListener("DOMContentLoaded", async () => {
   const feedContainer = document.getElementById("feed");
   const addPitchButton = document.getElementById("addPitchButton");
@@ -7,6 +6,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   function getCookie(name) {
     const value = `; ${document.cookie}`;
     const parts = value.split(`; ${name}=`);
+
     if (parts.length === 2) return parts.pop().split(";").shift();
   }
 
@@ -16,7 +16,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   console.log("User ID:", userId);
 
   // Show the "Add Pitch" button only for founders
-  if (userRole === "Founder") {
+  if (userRole === "founder") {
     addPitchButton.style.display = "inline-block";
   }
 
@@ -24,6 +24,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   addPitchButton.addEventListener("click", () => {
     window.location.href = `/founder/pitchform?userId=${userId}`;
   });
+
   try {
     const response = await fetch("/feed");
     const feedData = await response.json();
@@ -32,56 +33,87 @@ document.addEventListener("DOMContentLoaded", async () => {
       const feedItem = document.createElement("div");
 
       let spanId =
-        userRole === "Founder" ? "nameElementInvestor" : "nameElement";
+        userRole === "founder" ? "nameElementInvestor" : "nameElement";
 
-      if (userRole === "Investor") {
+      if (userRole === "investor") {
         feedItem.innerHTML = `
-
-            <div class="posts">
-              ${item.posts
-                .map(
-                  (post) => `
-
-               
-                <div class="post">
-                 <h3>
-                <span id="${spanId}" class="name-element" data-user-id="${item.id}">${item.startUpName}</span>
+          <div class="posts">
+            ${item.posts
+              .map(
+                (post) => `
+              <div class="post">
+                <h3>
+                  <span id="${spanId}" class="name-element" data-user-id="${item.id}">${item.startUpName}</span>
                 </h3>
                 <p><strong>Founder:</strong> 
                 <span id="${spanId}" class="name-element" data-user-id="${item.id}">${item.firstname} ${item.LastName}</span>
                 </p>
-                  <h4>${post.pitchTitle}</h4>
-                  <p>${post.pitchDescription}</p>
-                  <p><strong>Industry:</strong> ${item.industry}</p>
-                  <p><strong>Funding Stage:</strong> ${post.fundingStage}</p>
-                  <p><strong>Amount Required:</strong> $${post.amountRequired}</p>
-                  <p><strong>Likes:</strong> ${post.likes}</p>
-                </div>
-              `
-                )
-                .join("")}
-            </div>
-          `;
-      } else if (userRole === "Founder") {
+                <h4>${post.pitchTitle}</h4>
+                <p>${post.pitchDescription}</p>
+                <p><strong>Industry:</strong> ${item.industry}</p>
+                <p><strong>Funding Stage:</strong> ${post.fundingStage}</p>
+                <p><strong>Amount Required:</strong> $${post.amountRequired}</p>
+                <p><strong>Likes:</strong> ${post.likes}</p>
+                <button class="connect-btn" data-user-id="${item.id}">Connect</button>
+              </div>
+            `
+              )
+              .join("")}
+          </div>
+        `;
+      } else if (userRole === "founder") {
         feedItem.innerHTML = `
+          <div class="post">
             <h3>
               <span id="${spanId}" class="name-element" data-user-id="${item.id}">${item.firstname} ${item.LastName}</span>
             </h3>
             <p><strong>Investor Type:</strong> ${item.in}</p>
             <p>${item.description}</p>
-          `;
+            <button class="connect-btn" data-user-id="${item.id}">Connect</button>
+          </div>
+        `;
       }
 
       feedContainer.appendChild(feedItem);
+    });
+
+    // Add event listeners for "Connect" buttons
+    document.querySelectorAll(".connect-btn").forEach((button) => {
+      button.addEventListener("click", function () {
+        const targetUserId = button.getAttribute("data-user-id");
+
+        // Make an API call to handle the connection request
+        fetch("/connect", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            sourceUserId: userId,
+            targetUserId,
+          }),
+        })
+          .then((response) => {
+            if (response.ok) {
+              alert("Connection request sent successfully!");
+            } else {
+              alert("Failed to send connection request.");
+            }
+          })
+          .catch((error) => {
+            console.error("Error sending connection request:", error);
+            alert("An error occurred while sending the connection request.");
+          });
+      });
     });
 
     // Add event listeners to the dynamically created elements
     document.querySelectorAll(".name-element").forEach((element) => {
       element.addEventListener("click", function () {
         const userId = element.getAttribute("data-user-id");
-        if (userRole === "Founder") {
+        if (userRole === "founder") {
           window.location.href = `/investor/${userId}`;
-        } else if (userRole === "Investor") {
+        } else if (userRole === "investor") {
           window.location.href = `/founder/${userId}`;
         }
       });

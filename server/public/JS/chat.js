@@ -35,16 +35,16 @@ var socket = io("/user-namespace", {
 // fetching list of chat for current user login
 async function fetchUsers() {
   let userType = "";
-  if (role === "Founder") {
+  if (role === "founder") {
     userType = "investor";
   } else {
     userType = "founder";
   }
-
+  console.log(userType);
   const response = await fetch(`/${userType}/getList`);
 
   const users = await response.json();
-
+  console.log(users);
   const userList = document.querySelector(".user-list");
   userList.innerHTML = "";
 

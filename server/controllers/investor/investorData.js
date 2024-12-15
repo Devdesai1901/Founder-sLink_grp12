@@ -19,7 +19,7 @@ let exprtedMethod = {
     return user;
   },
   async getAllInvestor() {
-    const investor = await User.find({ userType: "Investor" });
+    const investor = await User.find({ userType: "investor" });
     if (!investor) throw "User Not found";
     return investor;
   },

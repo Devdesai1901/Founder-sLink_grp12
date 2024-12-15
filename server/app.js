@@ -9,7 +9,7 @@ import authRoutes from "./routes/authRoutes.js";
 import session from "express-session";
 import chat from "../server/models/chat.js";
 import { ObjectId } from "mongodb";
-
+import User from "./models/user.js";
 import cookieParser from "cookie-parser";
 // confing for dot file
 dotenv.config();
@@ -20,7 +20,6 @@ const app = express();
 // Connect to the database
 connectDB();
 
-
 // Middleware to serve static files
 // declaring stactic folder and setting handls configs
 app.use(cookieParser());
@@ -28,79 +27,93 @@ app.use("/public", express.static("public"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-app.use(session({
-  name: 'AuthenticationState',
-  secret: 'some secret string!',
-  resave: false,
-  saveUninitialized: false
-}));
+app.use(
+  session({
+    name: "AuthenticationState",
+    secret: "some secret string!",
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+      secure: false, // Set to true if using HTTPS
+      httpOnly: false, // Allow access to the cookie from client-side scripts
+    },
+  })
+);
 
 //SigInSignUp
-app.use('/', (req, res, next) => {
-  let authstate = req.session.user ? "Authenticated User" : "Non-Authenticated User";
-  console.log(`[${new Date().toUTCString()}]: ${req.method} ${req.originalUrl} (${authstate})`);
-  if(req.originalUrl === "/" && req.session.user && req.session.user.userType === "investor") {
-      return res.redirect("/investor");
+app.use("/", (req, res, next) => {
+  let authstate = req.session.user
+    ? "Authenticated User"
+    : "Non-Authenticated User";
+  console.log(
+    `[${new Date().toUTCString()}]: ${req.method} ${
+      req.originalUrl
+    } (${authstate})`
+  );
+  if (
+    req.originalUrl === "/" &&
+    req.session.user &&
+    req.session.user.userType === "investor"
+  ) {
+    return res.redirect("/investor");
   }
-  if (req.originalUrl === "/" && req.session.user && req.session.user.userType === "founder") {
-      return res.redirect("/founder");
+  if (
+    req.originalUrl === "/" &&
+    req.session.user &&
+    req.session.user.userType === "founder"
+  ) {
+    return res.redirect("/founder");
   }
   if (req.originalUrl === "/" && !req.session.user) {
-      return res.redirect("/signin");
+    return res.redirect("/signin");
   }
   if (req.originalUrl !== "/") {
-      next();
+    next();
   }
 });
-app.use('/signin', (req, res, next) =>{
-  if(req.method === "GET") {
-      if(req.session.user && req.session.user.userType === "investor"){
-          return res.redirect("/investor");
-      }
-      if(req.session.user && req.session.user.userType === "founder"){
-          return res.redirect("/founder");
-      }
-      next();
-  }
-  else{
-      next();
-  }
-});
-app.use('/signup', (req, res, next) =>{
-  if(req.method === "GET"){
-      if(req.session.user && req.session.user.userType === "investor"){
-          return res.redirect("/investor");
-      }
-      if(req.session.user && req.session.user.userType === "founder"){
-          return res.redirect("/founder");
-      }
-      next();
-  }
-  else {
-      next();
+app.use("/signin", (req, res, next) => {
+  if (req.method === "GET") {
+    if (req.session.user && req.session.user.userType === "investor") {
+      return res.redirect("/investor");
+    }
+    if (req.session.user && req.session.user.userType === "founder") {
+      return res.redirect("/founder");
+    }
+    next();
+  } else {
+    next();
   }
 });
-app.use('/signoutuser', (req, res, next) => {
-  if(req.method === "GET") {
-      if(!req.session.user) {
-          return res.redirect("/signin");
-      }
+app.use("/signup", (req, res, next) => {
+  if (req.method === "GET") {
+    if (req.session.user && req.session.user.userType === "investor") {
+      return res.redirect("/investor");
+    }
+    if (req.session.user && req.session.user.userType === "founder") {
+      return res.redirect("/founder");
+    }
+    next();
+  } else {
+    next();
+  }
+});
+app.use("/signoutuser", (req, res, next) => {
+  if (req.method === "GET") {
+    if (!req.session.user) {
+      return res.redirect("/signin");
+    }
 
-      if(req.session.user) {
-          next();
-      }
-  }
-  else {
+    if (req.session.user) {
       next();
+    }
+  } else {
+    next();
   }
 });
-
-
 
 // Handlebars view engine setup
 const hbs = exphbs.create({
-  defaultLayout: "landing",
-  layoutsDir: "views",
+  defaultLayout: "main",
   extname: "handlebars",
   helpers: {
     json: (context) => JSON.stringify(context),

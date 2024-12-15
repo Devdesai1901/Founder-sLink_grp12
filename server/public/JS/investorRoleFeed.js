@@ -9,14 +9,14 @@ document.addEventListener("DOMContentLoaded", function () {
   const userRole = getCookie("role");
   console.log("User Role:", userRole);
 
-  if (userRole === "Founder") {
+  if (userRole === "founder") {
     document.querySelectorAll("#nameElementInvestor").forEach((element) => {
       element.addEventListener("click", function () {
         const userId = element.getAttribute("data-user-id");
         window.location.href = `/investor/${userId}`;
       });
     });
-  } else if (userRole === "Investor") {
+  } else if (userRole === "investor") {
     document.querySelectorAll("#nameElement").forEach((element) => {
       element.addEventListener("click", function () {
         const userId = element.getAttribute("data-user-id");

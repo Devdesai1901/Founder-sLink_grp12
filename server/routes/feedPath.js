@@ -8,10 +8,9 @@ router.route("/").get(async (req, res) => {
     const userType = req.cookies.role;
     let feedData = [];
 
-    if (userType === "Founder") {
+    if (userType === "founder") {
       feedData = await investorMethods.getAllInvestorDetails();
-      console.log("Feed Data:", feedData);
-    } else if (userType === "Investor") {
+    } else if (userType === "investor") {
       feedData = await founderMethods.getAllFoundersPosts();
     }
 

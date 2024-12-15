@@ -61,13 +61,15 @@ let exprtedMethod = {
     validation.checkId(id);
     const objectId = new ObjectId(id);
     const user = await Founder.findOne({ userId: objectId });
+    console.log(user);
     if (!user) throw "User Not found";
     return user;
   },
 
   // function to get the all list of users who are fonnders
   async getAllFounders() {
-    const founders = await User.find({ userType: "Founder" });
+    const founders = await User.find({ userType: "founder" });
+
     if (!founders) throw "User Not found";
     return founders;
   },
