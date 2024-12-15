@@ -1,0 +1,24 @@
+{
+  "name": "founders-link",
+  "version": "1.0.0",
+  "description": "bridge between founders and inverstors",
+  "main": "app.js",
+  "type": "module",
+  "scripts": {
+    "seed": "node ./tasks/seed.js",
+    "start": "node app.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Dev Desai",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.20.3",
+    "dotenv": "^16.4.5",
+    "express": "^4.21.1",
+    "express-handlebars": "^8.0.1",
+    "express-session": "^1.18.1",
+    "mongodb": "^6.10.0",
+    "mongoose": "^8.8.0",
+    "socket.io": "^4.8.1"
+  }
+}

@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Investor Data Collection</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+    <h2>Investor Information Form</h2>
+
+    <form id="investorForm">
+        <fieldset>
+            <legend>Investor Information</legend>
+
+            <!-- Investor Type -->
+            <label for="investorType">Investor Type</label>
+            <select id="investorType" name="investorType" required>
+                <option value="">Select Investor Type</option>
+                <option value="Angel">Angel</option>
+                <option value="Venture Capitalist">Venture Capitalist</option>
+                <option value="Private Equity">Private Equity</option>
+                <option value="Family Office">Family Office</option>
+                <option value="Corporate">Corporate</option>
+            </select>
+
+            <!-- Investment Preferences -->
+            <label>Industries</label>
+            <input type="text" id="industries" name="industries" placeholder="e.g. Tech, Healthcare" required>
+
+            <label>Funding Stages</label>
+            <input type="text" id="fundingStages" name="fundingStages" placeholder="e.g. Seed, Series A" required>
+
+            <label>Geographic Preferences</label>
+            <input type="text" id="geographicPreferences" name="geographicPreferences" placeholder="e.g. USA, Europe" required>
+
+            <label for="minimumInvestmentAmount">Minimum Investment Amount</label>
+            <input type="number" id="minimumInvestmentAmount" name="minimumInvestmentAmount" placeholder="Enter minimum amount" required>
+
+            <label for="preferredStartupSize">Preferred Startup Size</label>
+            <select id="preferredStartupSize" name="preferredStartupSize" required>
+                <option value="Small">Small</option>
+                <option value="Medium">Medium</option>
+                <option value="Large">Large</option>
+            </select>
+
+            <label for="phone">Phone Number</label>
+            <input type="tel" id="phone" name="phone" placeholder="Enter your phone number">
+
+            <label for="email">Email Address</label>
+            <input type="email" id="email" name="email" placeholder="Enter email address">
+
+            <label for="preferredContactMethod">Preferred Contact Method</label>
+            <select id="preferredContactMethod" name="preferredContactMethod">
+                <option value="Email">Email</option>
+                <option value="Phone">Phone</option>
+                <option value="Message">Message</option>
+            </select>
+
+            <label>Social Links</label>
+            <input type="url" id="website" name="website" placeholder="Website">
+            <input type="url" id="linkedin" name="linkedin" placeholder="LinkedIn">
+            <input type="url" id="twitter" name="twitter" placeholder="Twitter">
+            <input type="url" id="personalBlog" name="personalBlog" placeholder="Personal Blog">
+
+            <label for="description">Investor Description</label>
+            <textarea id="description" name="description" rows="4" placeholder="Short description about the investor"></textarea>
+
+            <button type="button" id="saveBtn">Save</button>
+        </fieldset>
+    </form>
+
+    <script src="validateForm.js"></script>
+</body>
+</html>

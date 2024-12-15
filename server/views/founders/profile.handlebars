@@ -1,0 +1,112 @@
+<!-- Profile Banner -->
+<div class="profile-banner">
+    <h1>{{founder.startupName}}</h1>
+    <p class="mb-0">Industry: <strong>{{founder.startupIndustry}}</strong></p>
+    <p class="mt-2">
+        {{#if founder.socialLinks.website}}
+            <a href="{{founder.socialLinks.website}}" target="_blank">Website</a>
+        {{/if}}
+        {{#if founder.socialLinks.linkedIn}}
+            <a href="{{founder.socialLinks.linkedIn}}" target="_blank">LinkedIn</a>
+        {{/if}}
+        {{#if founder.socialLinks.twitter}}
+            <a href="{{founder.socialLinks.twitter}}" target="_blank">Twitter</a>
+        {{/if}}
+    </p>
+</div>
+
+<!-- Main Content -->
+<div class="container my-4">
+    <div class="row">
+        <!-- Left Column -->
+        <div class="col-md-4">
+            <!-- About Section -->
+            <div class="card p-3">
+                <h5>About the Company</h5>
+                <p>{{founder.companyDescription}}</p>
+                <ul>
+                    <li><strong>Year Established:</strong> {{founder.establishYear}}</li>
+                    <li><strong>Funding Stage:</strong> {{founder.fundingStage}}</li>
+                    <li><strong>Employees:</strong> {{founder.numberOfEmployees}}</li>
+                    <li><strong>Funding Goal:</strong> ${{founder.amountToRaiseFund}}</li>
+                </ul>
+            </div>
+
+            <!-- Key Metrics -->
+            <div class="card p-3">
+                <h5>Key Metrics</h5>
+                <ul>
+                    <li><strong>Valuation:</strong> ${{founder.keyMetrics.valuation}}</li>
+                    <li><strong>Profit Margin:</strong> {{founder.keyMetrics.profitMargin}}%</li>
+                    <li><strong>Total Funding Received:</strong> ${{founder.keyMetrics.totalFundingReceived}}</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Right Column -->
+        <div class="col-md-8">
+            <!-- Milestones Section -->
+            <div class="card p-3">
+                <h5>Milestones</h5>
+                <ul>
+                    {{#each founder.milestones}}
+                        <li><strong>{{milestoneName}}</strong> ({{formatDate dateAchieved}}): {{description}}</li>
+                    {{/each}}
+                </ul>
+            </div>
+
+            <!-- Financial Details -->
+            <div class="card p-3">
+                <h5>Financial Details</h5>
+                <ul>
+                    <li><strong>TAM:</strong> ${{founder.financialDetails.totalAddressableMarket}}</li>
+                    <li><strong>SAM:</strong> ${{founder.financialDetails.serviceableAvailableMarket}}</li>
+                    <li><strong>Reserves:</strong> ${{founder.financialDetails.totalCompanyReserves}}</li>
+                </ul>
+            </div>
+
+
+              <!-- Tractions-->
+            <div class="card p-3">
+                <h5>Traction</h5>
+                <ul>
+                    <li><strong>Monthly Active Users:</strong> ${{founder.traction.monthlyActiveUsers}}</li>
+                    <li><strong>Customer Retention:</strong> ${{founder.traction.customerRetentionRate}}</li>
+                    <li><strong>Annual Recurring Revenue:</strong> ${{founder.traction.annualRecurringRevenue}}</li>
+                </ul>
+            </div>
+
+            <!-- Financial Charts Section -->
+            <div class="card p-3 mb-4">
+                <h5>Charts</h5>
+                <div class="row text-center">
+                    <div class="col-md-4">
+                        <canvas id="revenueChart" style="width: 100%; max-height: 200px;"></canvas>
+                        <p class="chart-title mt-2"><strong>Revenue History</strong></p>
+                    </div>
+                    <div class="col-md-4">
+                        <canvas id="spendingChart" style="width: 100%; max-height: 200px;"></canvas>
+                        <p class="chart-title mt-2"><strong>Company Spending</strong></p>
+                    </div>
+                    <div class="col-md-4">
+                        <canvas id="equityChart" style="width: 100%; max-height: 200px;"></canvas>
+                        <p class="chart-title mt-2"><strong>Equity Dilution</strong></p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Posts -->
+            <div class="card p-3">
+                <h5>Latest Pitches</h5>
+                <ul>
+                    {{#each founder.posts}}
+                        <li>
+                            <strong>{{pitchTitle}}</strong>: {{pitchDescription}} 
+                            (Funding Needed: ${{amountRequired}})
+                        </li>
+                    {{/each}}
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>

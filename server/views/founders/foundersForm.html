@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Founder and Investor Data Form</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+    <h1>Founder Information Form</h1>
+
+    <form id="founderForm">
+        <h2>Founder Info</h2>
+
+        <label>Startup Name</label>
+        <input type="text" name="startupName" required><br>
+
+        <label>Startup Industry</label>
+        <input type="text" name="startupIndustry" required><br>
+
+        <label>Company Description</label>
+        <textarea name="companyDescription" maxlength="2000"></textarea><br>
+
+        <label>Year Established</label>
+        <input type="number" name="establishYear" min="1900" max="2024" required><br>
+
+        <label>Funding Stage</label>
+        <select name="fundingStage">
+            <option value="Seed">Seed</option>
+            <option value="Series A">Series A</option>
+            <option value="Series B">Series B</option>
+            <option value="IPO">IPO</option>
+        </select><br>
+
+        <label>Funding Goal ($)</label>
+        <input type="number" name="amountToRaiseFund" required><br>
+
+        <label>Team Size</label>
+        <input type="number" name="numberOfEmployees" min="1"><br>
+
+        <h2>Financial Details</h2>
+
+        <label>Total Addressable Market (TAM)</label>
+        <input type="number" name="totalAddressableMarket"><br>
+
+        <label>Serviceable Available Market (SAM)</label>
+        <input type="number" name="serviceableAvailableMarket"><br>
+
+        <label>Total Company Reserves</label>
+        <input type="number" name="totalCompanyReserves"><br>
+
+        <label>Monthly Active Users</label>
+        <input type="number" name="monthlyActiveUsers"><br>
+
+        <label>Customer Retention Rate (%)</label>
+        <input type="number" name="customerRetentionRate"><br>
+
+        <label>Annual Recurring Revenue (ARR)</label>
+        <input type="number" name="annualRecurringRevenue"><br>
+
+        <label>Website</label>
+        <input type="url" name="website"><br>
+
+        <label>LinkedIn</label>
+        <input type="url" name="linkedIn"><br>
+
+        <label>Twitter</label>
+        <input type="url" name="twitter"><br>
+
+        <button type="button" onclick="saveData()">Save</button>
+    </form>
+
+    <script src="validate.js"></script>
+</body>
+</html>
