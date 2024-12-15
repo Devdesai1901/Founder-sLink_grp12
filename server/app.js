@@ -12,8 +12,7 @@ import { ObjectId } from "mongodb";
 import cookieParser from "cookie-parser";
 import { fileURLToPath } from "url";
 import path from "path";
-import User from '../models/user.js';
-
+import User from "./models/user.js";
 
 dotenv.config();
 
