@@ -9,111 +9,33 @@ import authRoutes from "./routes/authRoutes.js";
 import session from "express-session";
 import chat from "../server/models/chat.js";
 import { ObjectId } from "mongodb";
-import User from "./models/user.js";
 import cookieParser from "cookie-parser";
-// confing for dot file
+import path from "path";
+
 dotenv.config();
 
 // Create Express app
 const app = express();
-
+const __dirname = path.dirname(new URL(import.meta.url).pathname);
 // Connect to the database
 connectDB();
 
-// Middleware to serve static files
-// declaring stactic folder and setting handls configs
+// Middleware for sessions
 app.use(cookieParser());
-app.use("/public", express.static("public"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
-app.use(
-  session({
-    name: "AuthenticationState",
-    secret: "some secret string!",
-    resave: false,
-    saveUninitialized: false,
-    cookie: {
-      secure: false, // Set to true if using HTTPS
-      httpOnly: false, // Allow access to the cookie from client-side scripts
-    },
-  })
-);
-
-//SigInSignUp
-app.use("/", (req, res, next) => {
-  let authstate = req.session.user
-    ? "Authenticated User"
-    : "Non-Authenticated User";
-  console.log(
-    `[${new Date().toUTCString()}]: ${req.method} ${
-      req.originalUrl
-    } (${authstate})`
-  );
-  if (
-    req.originalUrl === "/" &&
-    req.session.user &&
-    req.session.user.userType === "investor"
-  ) {
-    return res.redirect("/investor");
-  }
-  if (
-    req.originalUrl === "/" &&
-    req.session.user &&
-    req.session.user.userType === "founder"
-  ) {
-    return res.redirect("/founder");
-  }
-  if (req.originalUrl === "/" && !req.session.user) {
-    return res.redirect("/signin");
-  }
-  if (req.originalUrl !== "/") {
-    next();
-  }
-});
-app.use("/signin", (req, res, next) => {
-  if (req.method === "GET") {
-    if (req.session.user && req.session.user.userType === "investor") {
-      return res.redirect("/investor");
-    }
-    if (req.session.user && req.session.user.userType === "founder") {
-      return res.redirect("/founder");
-    }
-    next();
-  } else {
-    next();
-  }
-});
-app.use("/signup", (req, res, next) => {
-  if (req.method === "GET") {
-    if (req.session.user && req.session.user.userType === "investor") {
-      return res.redirect("/investor");
-    }
-    if (req.session.user && req.session.user.userType === "founder") {
-      return res.redirect("/founder");
-    }
-    next();
-  } else {
-    next();
-  }
-});
-app.use("/signoutuser", (req, res, next) => {
-  if (req.method === "GET") {
-    if (!req.session.user) {
-      return res.redirect("/signin");
-    }
-
-    if (req.session.user) {
-      next();
-    }
-  } else {
-    next();
-  }
-});
+app.use(session({
+  name: 'sessionId', // Session ID name
+  secret: 'your-secret-key', // Secret for encrypting session
+  resave: false,
+  saveUninitialized: false,
+  cookie: { secure: false } // Set 'secure: true' if you're using https
+}));
 
 // Handlebars view engine setup
 const hbs = exphbs.create({
   defaultLayout: "main",
+  layoutsDir: path.join(__dirname, "views", "layouts"),
   extname: "handlebars",
   helpers: {
     json: (context) => JSON.stringify(context),
@@ -126,20 +48,85 @@ const hbs = exphbs.create({
 });
 app.engine("handlebars", hbs.engine);
 app.set("view engine", "handlebars");
+
+// Serve static files (CSS, JS)
+app.use("/public", express.static(path.join(__dirname, "public")));
+
+// Middleware to handle route-specific behavior
+app.use('/', (req, res, next) => {
+  let authstate = req.session.user ? "Authenticated User" : "Non-Authenticated User";
+  console.log(`[${new Date().toUTCString()}]: ${req.method} ${req.originalUrl} (${authstate})`);
+  if (req.originalUrl === "/" && req.session.user && req.session.user.userType === "investor") {
+    return res.redirect("/investor");
+  }
+  if (req.originalUrl === "/" && req.session.user && req.session.user.userType === "founder") {
+    return res.redirect("/founder");
+  }
+  if (req.originalUrl === "/" && !req.session.user) {
+    return res.redirect("/signin");
+  }
+  if (req.originalUrl !== "/") {
+    next();
+  }
+});
+
+app.use('/signin', (req, res, next) => {
+  if (req.method === "GET") {
+    if (req.session.user && req.session.user.userType === "investor") {
+      return res.redirect("/investor");
+    }
+    if (req.session.user && req.session.user.userType === "founder") {
+      return res.redirect("/founder");
+    }
+    next();
+  } else {
+    next();
+  }
+});
+
+app.use('/signup', (req, res, next) => {
+  if (req.method === "GET") {
+    if (req.session.user && req.session.user.userType === "investor") {
+      return res.redirect("/investor");
+    }
+    if (req.session.user && req.session.user.userType === "founder") {
+      return res.redirect("/founder");
+    }
+    next();
+  } else {
+    next();
+  }
+});
+
+app.use('/signoutuser', (req, res, next) => {
+  if (req.method === "GET") {
+    if (!req.session.user) {
+      return res.redirect("/signin");
+    }
+    next();
+  } else {
+    next();
+  }
+});
+
+// Import authentication routes
 app.use(authRoutes);
-// Setup routes
+
+// Setup routes (other routes for your application)
 configRoutes(app);
 
-// Set up Socket.io server for real-time communication
+// Socket.io setup for real-time communication
 const server = http.createServer(app);
 const io = new Server(server);
 const usp = io.of("/user-namespace");
+
 let userSocketMap = {};
 
 usp.on("connection", async (socket) => {
   let userId = socket.handshake.auth.token;
   userId = new ObjectId(userId);
 
+  // Update user status to online
   await User.findByIdAndUpdate({ _id: userId }, { $set: { is_online: "1" } });
   userId = userId.toString();
   socket.broadcast.emit("getOnlineUser", { user_id: userId });
@@ -147,6 +134,7 @@ usp.on("connection", async (socket) => {
   socket.on("disconnect", async () => {
     let userId = socket.handshake.auth.token;
     userId = new ObjectId(userId);
+    // Update user status to offline
     await User.findByIdAndUpdate({ _id: userId }, { $set: { is_online: "0" } });
     userId = userId.toString();
     socket.broadcast.emit("getOfflineUser", { user_id: userId });
@@ -168,8 +156,7 @@ usp.on("connection", async (socket) => {
 });
 
 // Start the server
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 3000;
 server.listen(PORT, () => {
-  console.log("Server is running!");
   console.log(`Server running on port ${PORT}`);
 });
