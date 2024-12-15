@@ -10,13 +10,14 @@ import session from "express-session";
 import chat from "../server/models/chat.js";
 import { ObjectId } from "mongodb";
 import cookieParser from "cookie-parser";
+import { fileURLToPath } from "url";
 import path from "path";
 
 dotenv.config();
 
 // Create Express app
 const app = express();
-const __dirname = path.dirname(new URL(import.meta.url).pathname);
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 // Connect to the database
 connectDB();
 
@@ -35,7 +36,7 @@ app.use(session({
 // Handlebars view engine setup
 const hbs = exphbs.create({
   defaultLayout: "main",
-  layoutsDir: path.join(__dirname, "views", "layouts"),
+  layoutsDir: path.resolve(__dirname, "views", "layouts"), // Normalized path to prevent duplication
   extname: "handlebars",
   helpers: {
     json: (context) => JSON.stringify(context),

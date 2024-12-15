@@ -6,10 +6,10 @@ import qrcode from 'qrcode';
 
 const router = Router();
 
-// Route for landing page (uses layout in views/layouts)
+
 router.route("/").get((req, res) => {
     try {
-        res.render("landing"); // Render the `landing.handlebars` file from the layouts folder
+        res.render("landing"); 
     } catch (e) {
         return res.status(500).json({ error: "Unable to load landing page" });
     }
