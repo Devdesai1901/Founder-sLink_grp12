@@ -1,0 +1,61 @@
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Founder Form</title>
+</head>
+<body>
+  <h1>Founder Form</h1>
+  <form id="founderForm">
+    <!-- Startup Information -->
+    <h3>Startup Details</h3>
+    <label for="startupName">Startup Name:</label>
+    <input type="text" id="startupName" name="startupName" required><br>
+
+    <label for="startupIndustry">Industry:</label>
+    <input type="text" id="startupIndustry" name="startupIndustry" required><br>
+
+    <label for="companyDescription">Description:</label>
+    <textarea id="companyDescription" name="companyDescription" maxlength="2000"></textarea><br>
+
+    <label for="establishYear">Year Established:</label>
+    <input type="number" id="establishYear" name="establishYear" required><br>
+
+    <label for="fundingStage">Funding Stage:</label>
+    <select id="fundingStage" name="fundingStage" required>
+      <option value="Seed">Seed</option>
+      <option value="Series A">Series A</option>
+      <option value="Series B">Series B</option>
+      <option value="IPO">IPO</option>
+    </select><br>
+
+    <label for="amountToRaiseFund">Amount to Raise (USD):</label>
+    <input type="number" id="amountToRaiseFund" name="amountToRaiseFund" required><br>
+
+    <!-- Financial Details -->
+    <h3>Financial Details</h3>
+    <label for="tam">Total Addressable Market (TAM):</label>
+    <input type="number" id="tam" name="tam"><br>
+
+    <label for="sam">Serviceable Available Market (SAM):</label>
+    <input type="number" id="sam" name="sam"><br>
+
+    <label for="companyReserves">Company Reserves:</label>
+    <input type="number" id="companyReserves" name="companyReserves"><br>
+
+    <!-- Social Links -->
+    <h3>Social Links</h3>
+    <label for="website">Website:</label>
+    <input type="url" id="website" name="website"><br>
+
+    <label for="linkedIn">LinkedIn:</label>
+    <input type="url" id="linkedIn" name="linkedIn"><br>
+
+    <label for="twitter">Twitter:</label>
+    <input type="url" id="twitter" name="twitter"><br>
+
+    <button type="submit">Submit</button>
+  </form>
+</body>
+<script src="founderForm.js"></script>
+</html>

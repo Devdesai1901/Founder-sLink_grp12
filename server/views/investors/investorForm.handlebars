@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Investor Form</title>
+</head>
+<body>
+  <h1>Investor Form</h1>
+  <form id="investorForm">
+    <!-- Investor Details -->
+    <h3>Investor Details</h3>
+    <label for="investorType">Type:</label>
+    <select id="investorType" name="investorType" required>
+      <option value="Angel">Angel</option>
+      <option value="Venture Capitalist">Venture Capitalist</option>
+      <option value="Private Equity">Private Equity</option>
+      <option value="Family Office">Family Office</option>
+      <option value="Corporate">Corporate</option>
+    </select><br>
+
+    <label for="minimumInvestmentAmount">Minimum Investment (USD):</label>
+    <input type="number" id="minimumInvestmentAmount" name="minimumInvestmentAmount" required><br>
+
+    <!-- Contact Information -->
+    <h3>Contact Information</h3>
+    <label for="phone">Phone:</label>
+    <input type="text" id="phone" name="phone" required><br>
+
+    <label for="email">Email:</label>
+    <input type="email" id="email" name="email" required><br>
+
+    <!-- Social Links -->
+    <h3>Social Links</h3>
+    <label for="website">Website:</label>
+    <input type="url" id="website" name="website"><br>
+
+    <label for="linkedIn">LinkedIn:</label>
+    <input type="url" id="linkedIn" name="linkedIn"><br>
+
+    <label for="twitter">Twitter:</label>
+    <input type="url" id="twitter" name="twitter"><br>
+
+    <button type="submit">Submit</button>
+  </form>
+</body>
+<script src="investorForm.js"></script>
+</html>

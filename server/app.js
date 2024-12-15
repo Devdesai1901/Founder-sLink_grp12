@@ -35,7 +35,7 @@ app.use(session({
 // Handlebars view engine setup
 const hbs = exphbs.create({
   defaultLayout: "main",
-  layoutsDir: path.join(__dirname, "views", "layouts"),
+  // layoutsDir: path.join(__dirname, "views", "layouts"),
   extname: "handlebars",
   helpers: {
     json: (context) => JSON.stringify(context),
