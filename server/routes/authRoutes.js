@@ -3,6 +3,8 @@ import { signUpUser, signInUser } from "../controllers/authController.js";
 import helper from "../utils/helper.js";
 import speakeasy from 'speakeasy';
 import qrcode from 'qrcode';
+import User from '../models/user.js';
+
 
 const router = Router();
 
@@ -107,6 +109,14 @@ router
                 dateOfBirth: user.dateOfBirth,
                 userType: user.userType // Store the user type to redirect them accordingly
             };
+
+            //Adding Cookies
+            res.cookie("role", user.userType);
+            res.cookie("firstName", user.firstName);
+            res.cookie("lastName", user.lastName);
+            res.cookie("email", user.email);
+            res.cookie("id", JSON.stringify(user.id));
+            console.log(res.cookie);
 
             // Check if user has 2FA enabled
             if (user.twoFactorSecret) {
