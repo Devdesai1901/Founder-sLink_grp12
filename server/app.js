@@ -13,6 +13,8 @@ import cookieParser from "cookie-parser";
 import { fileURLToPath } from "url";
 import path from "path";
 import User from "./models/user.js";
+import { handleConnectionRequest } from "./controllers/connectController.js"; 
+
 
 dotenv.config();
 
@@ -110,6 +112,9 @@ app.use('/signoutuser', (req, res, next) => {
     next();
   }
 });
+
+// POST request handler for connection requests
+app.post('/connect', handleConnectionRequest); 
 
 // Import authentication routes
 app.use(authRoutes);

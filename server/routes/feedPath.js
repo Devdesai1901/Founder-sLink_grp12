@@ -1,7 +1,8 @@
 import { Router } from "express";
 import founderMethods from "../controllers/founder/founderData.js";
 import investorMethods from "../controllers/investor/investorData.js";
-import helper from "../utils/validation.js";
+import { handleConnectionRequest } from "../controllers/connectController.js"; 
+
 const router = Router();
 router.route("/").get(async (req, res) => {
   try {
@@ -19,5 +20,8 @@ router.route("/").get(async (req, res) => {
     return res.status(400).json({ error: "Unable to fetch feed data" });
   }
 });
+
+router.post("/connect", handleConnectionRequest);
+
 
 export default router;

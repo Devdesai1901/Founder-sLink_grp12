@@ -17,7 +17,16 @@ const UserSchema = new mongoose.Schema({
   dateOfBirth: { type: Date, required: true },
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date, default: Date.now },
+
+  connections: [
+    {
+      userId: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+      status: { type: String, enum: ["pending", "accepted", "declined"], default: "pending" },
+      createdAt: { type: Date, default: Date.now },
+    },
+  ],
 });
+
 
 const User = mongoose.model("User", UserSchema);
 export default User;

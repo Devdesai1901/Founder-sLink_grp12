@@ -78,34 +78,49 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
 
     // Add event listeners for "Connect" buttons
+
     document.querySelectorAll(".connect-btn").forEach((button) => {
       button.addEventListener("click", function () {
         const targetUserId = button.getAttribute("data-user-id");
-
-        // Make an API call to handle the connection request
-        fetch("/connect", {
+        let userId = getCookie("id");
+        const sanitizedUserId = userId.replace(/^"|"$/g, "");
+        console.log(sanitizedUserId);
+        if (!sanitizedUserId) {
+          console.error("User ID cookie is not found!");
+          alert("Unable to retrieve user ID. Please login again.");
+          return;
+        }
+    
+  
+    
+        console.log(`Connecting: sourceUserId = ${sanitizedUserId}, targetUserId = ${targetUserId}`);  
+        fetch("/feed/connect", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            sourceUserId: userId,
-            targetUserId,
+            sourceUserId: sanitizedUserId,
+            targetUserId: targetUserId,
           }),
         })
-          .then((response) => {
-            if (response.ok) {
-              alert("Connection request sent successfully!");
-            } else {
-              alert("Failed to send connection request.");
-            }
-          })
-          .catch((error) => {
-            console.error("Error sending connection request:", error);
-            alert("An error occurred while sending the connection request.");
-          });
+        .then((response) => response.json())
+        .then((data) => {
+          if (data.success) {
+            alert("Connection request sent successfully!");
+          } else {
+            alert(`Error: ${data.message}`);
+          }
+        })
+        .catch((error) => {
+          console.error("Error sending connection request:", error);
+          alert("An error occurred while sending the connection request.");
+        });
       });
     });
+    
+    
+
 
     // Add event listeners to the dynamically created elements
     document.querySelectorAll(".name-element").forEach((element) => {
