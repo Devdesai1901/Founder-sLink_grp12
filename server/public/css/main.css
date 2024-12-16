@@ -3,7 +3,7 @@ body {
     margin: 0;
     padding: 0;
   }
-  
+
   html, body {
     height: 100%;
     margin: 0;
@@ -59,8 +59,8 @@ footer {
     display: flex;
     height: 100%;
   }
-  
-  
+
+
 .left-section {
   flex: 0 0 70%;
   padding: 20px;
@@ -74,13 +74,13 @@ footer {
   overflow-y: auto;
 }
 
-  
+
   .user-list {
     flex: 1;
     overflow-y: auto;
     padding: 10px;
   }
-  
+
   .user-item {
     display: flex;
     align-items: center;
@@ -90,14 +90,14 @@ footer {
     border: 1px solid #ddd;
     border-radius: 5px;
   }
-  
+
   .user-item img {
     width: 40px;
     height: 40px;
     border-radius: 50%;
     margin-right: 10px;
   }
-  
+
   .chat-window {
     position: fixed;
     bottom: 0;
@@ -111,11 +111,11 @@ footer {
     display: flex;
     flex-direction: column;
   }
-  
+
   .chat-window.hidden {
     display: none;
   }
-  
+
   .chat-header {
     padding: 10px;
     background-color: #007bff;
@@ -124,26 +124,26 @@ footer {
     justify-content: space-between;
     align-items: center;
   }
-  
+
   .chat-messages {
     flex: 1;
     overflow-y: auto;
     padding: 10px;
   }
-  
+
   .chat-input {
     display: flex;
     padding: 10px;
     border-top: 1px solid #ddd;
   }
-  
+
   .chat-input input {
     flex: 1;
     padding: 10px;
     border: 1px solid #ddd;
     border-radius: 5px;
   }
-  
+
   .chat-input button {
     margin-left: 5px;
     padding: 10px;
@@ -157,7 +157,7 @@ footer {
   .online-status{
     color: green;
   }
-  
+
   .offline-status{
     color: red;
   }
@@ -167,7 +167,7 @@ footer {
     margin: 10px;
     color: black;
   }
-  
+
   /* Chat container styles for layout consistency */
 .chat-container {
   display: flex;
@@ -528,4 +528,18 @@ footer {
   text-align: center;
   color: #eac925;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+.connect-btn {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  cursor: pointer;
+  font-size: 14px;
+  border-radius: 4px;
+}
+
+.connect-btn:disabled {
+  background-color: #6c757d;
+  cursor: not-allowed;
 }
