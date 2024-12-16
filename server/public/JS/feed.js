@@ -1,8 +1,21 @@
 document.addEventListener("DOMContentLoaded", async () => {
   const feedContainer = document.getElementById("feed");
+  const addPitchButton = document.getElementById("addPitchButton");
 
   const userRole = getCookie("role");
   const userId = getCookie("id");
+  console.log("User Role:", userRole);
+  console.log("User ID:", userId);
+
+  // Show the "Add Pitch" button only for founders
+  if (userRole === "founder") {
+    addPitchButton.style.display = "inline-block";
+  }
+
+  // Handle "Add Pitch" button click
+  addPitchButton.addEventListener("click", () => {
+    window.location.href = `/founder/pitchform?userId=${userId}`;
+  });
 
   try {
     const response = await fetch("/feed");
@@ -36,6 +49,17 @@ document.addEventListener("DOMContentLoaded", async () => {
             .join("")}
           </div>
         `;
+      } else if (userRole === "founder") {
+        feedItem.innerHTML = `
+          <div class="post">
+            <h3>
+              <span id="${spanId}" class="name-element" data-user-id="${item.id}">${item.firstname} ${item.LastName}</span>
+            </h3>
+            <p><strong>Investor Type:</strong> ${item.in}</p>
+            <p>${item.description}</p>
+            <button class="connect-btn" data-user-id="${item.id}">Connect</button>
+          </div>
+        `;
       }
 
       feedContainer.appendChild(feedItem);
@@ -46,6 +70,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       button.addEventListener("click", function () {
         const targetUserId = button.getAttribute("data-user-id");
 
+        // Make an API call to handle the connection request
         fetch("/connect", {
           method: "POST",
           headers: {
@@ -70,6 +95,18 @@ document.addEventListener("DOMContentLoaded", async () => {
               console.error("Error sending connection request:", error);
               alert("An error occurred while sending the connection request.");
             });
+      });
+    });
+
+    // Add event listeners to the dynamically created elements
+    document.querySelectorAll(".name-element").forEach((element) => {
+      element.addEventListener("click", function () {
+        const userId = element.getAttribute("data-user-id");
+        if (userRole === "founder") {
+          window.location.href = `/investor/${userId}`;
+        } else if (userRole === "investor") {
+          window.location.href = `/founder/${userId}`;
+        }
       });
     });
   } catch (error) {
