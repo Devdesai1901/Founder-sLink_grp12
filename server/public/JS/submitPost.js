@@ -41,8 +41,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
       if (response.ok) {
         // Handle successful response
-        alert("Pitch submitted successfully!");
-        window.location.href = `/founder/dashboard/${userId}`;
+        window.location.href = `/founder/dashboard/`;
       } else {
         // Handle error response
         alert("Failed to submit pitch. Please try again.");
