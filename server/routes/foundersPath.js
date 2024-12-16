@@ -3,6 +3,19 @@ import founderMethods from "../controllers/founder/founderData.js";
 import validation from "../utils/validation.js";
 const router = Router();
 
+//route to just get founder for founder form
+router.route("/foundersPofileForm").get(async(req,res) => {
+  try{
+    const userId = req.session.user.id;
+    validation.checkId(userId);
+    let uniqueUser = await founderMethods.getFounderById(userId);
+    console.log(uniqueUser);
+    res.render("founders/founderForm");
+  } catch (e){
+    return res.status(400).json({ error: "renderings error for founders form"});
+  }
+});
+
 // get the all list of users who are founders
 router.route("/getList").get(async (req, res) => {
   try {
@@ -16,14 +29,12 @@ router.route("/getList").get(async (req, res) => {
 router.route("/dashboard/").get(async (req, res) => {
   try {
     const userId = req.session.user.id;
-
     validation.checkId(userId);
     let uniqueUser = await founderMethods.getFounderById(userId);
     // res.cookie("role", uniqueUser.userType);
     // res.cookie("firstName", uniqueUser.firstName);
     // res.cookie("lastName", uniqueUser.lastName);
     // res.cookie("email", uniqueUser.email);
-
     // uniqueUser._id = String(uniqueUser._id);
     // res.cookie("id", JSON.stringify(uniqueUser._id));
     res.render("common/dashboard");
@@ -34,24 +45,7 @@ router.route("/dashboard/").get(async (req, res) => {
   }
 });
 
-// route to just get the Founders Data from Founders Table
-router
-  .route("/:id")
-  .get(async (req, res) => {
-    try {
-      const userId = req.params.id;
-      console.log(userId);
-      validation.checkId(userId);
-      const founder = await founderMethods.getFounderFromFounderById(userId);
-      res.render("founders/profile", { founder });
-    } catch (e) {
-      return res
-        .status(400)
-        .json({ error: "error in rendring founder profile page" });
-    }
-  })
-  .post()
-  .put();
+
 router
   .route("/pitchform")
   .get(async (req, res) => {
@@ -105,5 +99,24 @@ router
       return res.status(400).json({ error: "Unable to upload the post" });
     }
   });
+
+// route to just get the Founders Data from Founders Table
+router
+  .route("/:id")
+  .get(async (req, res) => {
+    try {
+      const userId = req.params.id;
+      console.log(userId);
+      validation.checkId(userId);
+      const founder = await founderMethods.getFounderFromFounderById(userId);
+      res.render("founders/profile", { founder });
+    } catch (e) {
+      return res
+        .status(400)
+        .json({ error: "error in rendring founder profile page" });
+    }
+  })
+  .post()
+  .put();
 
 export default router;

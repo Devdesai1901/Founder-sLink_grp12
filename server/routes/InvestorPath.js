@@ -13,6 +13,7 @@ router.route("/getList").get(async (req, res) => {
   }
 });
 
+
 //route  to get all the data of User from User Table
 router.route("/dashboard/").get(async (req, res) => {
   try {
@@ -24,12 +25,24 @@ router.route("/dashboard/").get(async (req, res) => {
     // res.cookie("lastName", uniqueUser.lastName);
     // uniqueUser._id = uniqueUser._id.toString();
     // res.cookie("id", JSON.stringify(uniqueUser._id));
-
     res.render("common/dashboard");
   } catch (e) {
     return res
       .status(400)
       .json({ error: "error in rendring  investor dashboard page" });
+  }
+});
+
+//route to get investor for investor form
+router.route("/investorsPofileForm").get(async(req,res) => {
+  try{
+    const userId = req.session.user.id;
+    validation.checkId(userId);
+    let uniqueUser = await founderMethods.getFounderById(userId);
+    console.log(uniqueUser);
+    res.render("investor/investorForm");
+  } catch (e){
+    return res.status(400).json({ error: "rendering error for investor form"});
   }
 });
 
