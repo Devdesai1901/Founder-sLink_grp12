@@ -13,6 +13,9 @@ import cookieParser from "cookie-parser";
 import { fileURLToPath } from "url";
 import path from "path";
 import User from "./models/user.js";
+import connectionRoutes from "./routes/connectionRoutes.js";
+
+
 
 dotenv.config();
 
@@ -114,6 +117,10 @@ app.use('/signoutuser', (req, res, next) => {
 // Import authentication routes
 app.use(authRoutes);
 
+//Connect Feature
+app.use("/connect", connectionRoutes);
+
+
 // Setup routes (other routes for your application)
 configRoutes(app);
 
@@ -121,8 +128,6 @@ configRoutes(app);
 const server = http.createServer(app);
 const io = new Server(server);
 const usp = io.of("/user-namespace");
-
-let userSocketMap = {};
 
 usp.on("connection", async (socket) => {
   let userId = socket.handshake.auth.token;
@@ -155,7 +160,14 @@ usp.on("connection", async (socket) => {
     });
     socket.emit("loadChats", { chats: oldChats });
   });
+
+  // Handle connection updates (inside the connection event)
+  socket.on("connectionStatusUpdated", (data) => {
+    console.log("Connection update:", data);
+    socket.emit("connectionStatusUpdated", data);  
+  });
 });
+
 
 // Start the server
 const PORT = process.env.PORT || 3000;

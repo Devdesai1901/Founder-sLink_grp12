@@ -77,35 +77,58 @@ document.addEventListener("DOMContentLoaded", async () => {
       feedContainer.appendChild(feedItem);
     });
 
-    // Add event listeners for "Connect" buttons
-    document.querySelectorAll(".connect-btn").forEach((button) => {
-      button.addEventListener("click", function () {
-        const targetUserId = button.getAttribute("data-user-id");
+    //For connection request 
+    // public/js/feed.js
+    const socket = io("/");  // Connect to Socket.IO server
 
-        // Make an API call to handle the connection request
-        fetch("/connect", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            sourceUserId: userId,
-            targetUserId,
-          }),
-        })
-          .then((response) => {
-            if (response.ok) {
-              alert("Connection request sent successfully!");
-            } else {
-              alert("Failed to send connection request.");
-            }
-          })
-          .catch((error) => {
-            console.error("Error sending connection request:", error);
-            alert("An error occurred while sending the connection request.");
-          });
+// Listen for connection status updates from the server
+  socket.on("connectionStatusUpdated", (data) => {
+  const { message, status, userId } = data;
+
+  // Show the alert
+  alert(message);
+
+  // Find the "Connect" button and update its text and disable it
+  const button = document.querySelector(`[data-user-id='${userId}']`);
+  if (button) {
+    button.textContent = "Connected";
+    button.disabled = true;  // Disable the button after connection
+  }
+});
+
+// Handle the "Connect" button click
+  document.querySelectorAll(".connect-btn").forEach((button) => {
+  button.addEventListener("click", function () {
+    const targetUserId = button.getAttribute("data-user-id");
+    const sourceUserId = button.getAttribute("data-source-user-id");
+
+    fetch("/connect", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        sourceUserId,
+        targetUserId,
+      }),
+    })
+      .then((response) => {
+        if (response.ok) {
+          button.textContent = "Connected";
+          button.disabled = true;  // Disable the button
+        } else {
+          alert("Failed to send connection request.");
+        }
+      })
+      .catch((error) => {
+        console.error("Error sending connection request:", error);
+        alert("An error occurred while sending the connection request.");
       });
-    });
+  });
+});
+
+
+
 
     // Add event listeners to the dynamically created elements
     document.querySelectorAll(".name-element").forEach((element) => {
