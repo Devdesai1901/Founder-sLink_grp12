@@ -82,8 +82,9 @@ document.addEventListener("DOMContentLoaded", async () => {
     document.querySelectorAll(".connect-btn").forEach((button) => {
       button.addEventListener("click", function () {
         const targetUserId = button.getAttribute("data-user-id");
-        let userId = getCookie("id");
-        const sanitizedUserId = userId.replace(/^"|"$/g, "");
+        let userId = getCookie("id");   
+        const decodedUserId = decodeURIComponent(userId); 
+        const sanitizedUserId = decodedUserId.replace(/^"|"$/g, "");
         console.log(sanitizedUserId);
         if (!sanitizedUserId) {
           console.error("User ID cookie is not found!");
