@@ -13,6 +13,8 @@ import cookieParser from "cookie-parser";
 import { fileURLToPath } from "url";
 import path from "path";
 import User from "./models/user.js";
+import mongoose from "mongoose";
+import Connection from "./models/connection.js";
 
 dotenv.config();
 
@@ -110,6 +112,52 @@ app.use('/signoutuser', (req, res, next) => {
     next();
   }
 });
+// Route to handle connection between users
+app.post("/connect", async (req, res) => {
+  try {
+    const sanitizeId = (id) => {
+      if (typeof id === "string" && id.startsWith('"') && id.endsWith('"')) {
+        return id.slice(1, -1);
+      }
+      return id;
+    };
+
+    const sourceUserId = sanitizeId(req.body.sourceUserId);
+    const targetUserId = sanitizeId(req.body.targetUserId);
+
+    if (!mongoose.Types.ObjectId.isValid(sourceUserId) || !mongoose.Types.ObjectId.isValid(targetUserId)) {
+      return res.status(400).json({ error: "Invalid user ID format." });
+    }
+
+    const sourceUser = await User.findById(sourceUserId);
+    const targetUser = await User.findById(targetUserId);
+
+    if (!sourceUser || !targetUser) {
+      return res.status(404).json({ error: "One or both users not found." });
+    }
+
+    const existingConnection = await Connection.findOne({ sourceUserId, targetUserId });
+    if (existingConnection) {
+      return res.status(400).json({ error: "Connection already exists." });
+    }
+
+    const newConnection = new Connection({ sourceUserId, targetUserId });
+    await newConnection.save();
+
+    const io = req.app.get("io");
+    if (io) {
+      io.emit("newConnection", { sourceUserId, targetUserId });
+    }
+
+    return res.status(200).json({ success: true, message: "Connection successful." });
+  } catch (error) {
+    console.error("Error connecting users:", error);
+    res.status(500).json({ error: "Internal server error." });
+  }
+});
+
+
+
 
 // Import authentication routes
 app.use(authRoutes);
@@ -120,9 +168,9 @@ configRoutes(app);
 // Socket.io setup for real-time communication
 const server = http.createServer(app);
 const io = new Server(server);
-const usp = io.of("/user-namespace");
+app.set("io", io); // Store io instance for later use in routes
 
-let userSocketMap = {};
+const usp = io.of("/user-namespace");
 
 usp.on("connection", async (socket) => {
   let userId = socket.handshake.auth.token;
@@ -154,6 +202,11 @@ usp.on("connection", async (socket) => {
       ],
     });
     socket.emit("loadChats", { chats: oldChats });
+  });
+
+  // Handle real-time connection notifications
+  socket.on("newConnection", (data) => {
+    socket.emit("connectionMade", data);
   });
 });
 
