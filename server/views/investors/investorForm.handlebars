@@ -1,11 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Investor Form</title>
-</head>
-<body>
+
   <h1>Investor Form</h1>
   <form id="investorForm">
     <!-- Investor Details -->
@@ -92,9 +85,10 @@
 
     <button type="submit">Submit</button>
   </form>
-</body>
-<script>
+
+{{!-- <script>
   let performanceMetricsIndex = 1;
+
   function addPerformanceMetrics() {
     const container = document.getElementById('performanceMetricsContainer');
     const performanceMetricsHTML = `
@@ -118,5 +112,9 @@
     container.insertAdjacentHTML('beforeend', performanceMetricsHTML);
     performanceMetricsIndex++;
   }
-</script>
-</html>
+
+  // Add the first set of performance metrics fields by default
+  document.addEventListener('DOMContentLoaded', () => {
+    addPerformanceMetrics();
+  });
+</script> --}}
