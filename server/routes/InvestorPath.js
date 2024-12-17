@@ -24,7 +24,7 @@ router.route("/dashboard/").get(async (req, res) => {
     // res.cookie("lastName", uniqueUser.lastName);
     // uniqueUser._id = uniqueUser._id.toString();
     // res.cookie("id", JSON.stringify(uniqueUser._id));
-
+  
     res.render("common/dashboard");
   } catch (e) {
     return res
@@ -33,6 +33,22 @@ router.route("/dashboard/").get(async (req, res) => {
   }
 });
 
+
+// router.route("/getRanking/:id").get(async (req,res)=>{
+//  try{
+
+//   const userId = req.params.id;
+//   validation.checkId(userId);
+
+//   cons
+//  }catch(e)
+//  {
+//   return res
+//         .status(400)
+//         .json({ error: "error in get Ranking of USer" });
+//  }
+
+// });
 //route  to get all the data of Investor from Investor Table
 router
   .route("/:id")
