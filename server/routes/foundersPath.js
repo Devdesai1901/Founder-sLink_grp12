@@ -12,6 +12,25 @@ router.route("/getList").get(async (req, res) => {
     return res.status(400).json({ error: "unable to fetch data" });
   }
 });
+
+// Route to render the DealDashboard
+router.route("/DealDashboard").get(async (req, res) => {
+  try {
+    const founderId = req.session.user.id;
+    validation.checkId(founderId);
+
+    // Fetch necessary data using investorId
+    const dealDetails = await founderMethods.getFounderrDealsDetails(founderId);
+    console.log("Founder Data:", dealDetails);
+    // Render the DealDashboard view with the fetched data
+    res.render("founders/dealDashboard", { dealDetails });
+  } catch (e) {
+    return res
+      .status(400)
+      .json({ error: "error in rendering founders DealDashboard page" });
+  }
+});
+
 // route to just get the User data from User Table
 router.route("/dashboard/").get(async (req, res) => {
   try {
@@ -34,7 +53,7 @@ router.route("/dashboard/").get(async (req, res) => {
   }
 });
 
-
+//route to get to the pitch form
 router
   .route("/pitchform")
   .get(async (req, res) => {
@@ -109,5 +128,7 @@ router
   })
   .post()
   .put();
+
+
 
 export default router;

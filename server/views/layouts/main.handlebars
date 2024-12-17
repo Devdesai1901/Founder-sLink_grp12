@@ -29,7 +29,7 @@
                 </button>
                 <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton">
                     <li><a class="dropdown-item" href="#">Profile</a></li>
-                    <li><a class="dropdown-item" href="#">Dashboard</a></li>
+                   <li><a class="dropdown-item" href="#" id="dashboard-link">Dashboard</a></li>
                     <li><a class="dropdown-item" href="/signout">Logout</a></li>
                 </ul>
             </div>
@@ -37,9 +37,30 @@
     </header>
     <div class="wrapper">
         {{{body}}}
+    <script>
+    function getCookie(name) {
+      const cookies = document.cookie.split("; ");
+      for (let cookie of cookies) {
+        const [key, value] = cookie.split("=");
+        if (key === name) return decodeURIComponent(value);
+      }
+      return null;
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+      const role = getCookie("role");
+      const dashboardLink = document.getElementById("dashboard-link");
+
+      if (role === "founder") {
+        dashboardLink.href = "/founder/DealDashboard";
+      } else if (role === "investor") {
+        dashboardLink.href = "/investor/DealDashboard";
+      }
+    });
+  </script>
         {{!-- <footer class="footer text-center py-4" style="background-color: #f4f4f4;">
         <p>&copy; 2024 Founder Link. All Rights Reserved.</p>
-    </footer> --}}
+    </footer> --}} 
     </div>
 
 
@@ -48,6 +69,9 @@
 <script src="/public/JS/chat.js"></script>
 <script src="/public/JS/submitPost.js"></script>
 <script src="/public/JS/searchFilter.js"></script>
+<script src="/public/JS/chat.js"></script> 
+<script src="/public/JS/submitPost.js"></script>
+<script src="/public/JS/progressFormSubmit.js"></script>
 {{!-- <script src="/public/JS/investorRoleFeed.js"></script>
 <script src="/public/JS/founderSideRoleFeed.js"></script> --}}
 <script src="/public/JS/feed.js"></script>

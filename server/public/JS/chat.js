@@ -58,6 +58,8 @@ async function fetchUsers() {
           }" alt="Profile Picture">
           <span>${user.firstName} ${user.lastName}</span>
         `;
+
+      // Create online/offline status
       let supElement = document.createElement("div");
       if (user.is_online == "1") {
         supElement = document.createElement("sup");
@@ -73,11 +75,37 @@ async function fetchUsers() {
         supElement.innerHTML = "Offline";
       }
       userItem.appendChild(supElement);
+
+      // Add Progress Button for Investors
+      if (role === "investor") {
+        const addProgressButton = document.createElement("button");
+        addProgressButton.className = "add-progress-button";
+        addProgressButton.textContent = "Add Progress";
+        addProgressButton.onclick = () => addProgress(user._id); // Pass user ID
+        userItem.appendChild(addProgressButton);
+      }
+
       userItem.onclick = () =>
         openChat(user._id, `${user.firstName} ${user.lastName}`);
       userList.appendChild(userItem);
     });
   }
+}
+
+function addProgress(userId) {
+  // Make an API call to the server to get the form page
+  fetch(`/investor/progress/${userId}`, {
+    method: "GET",
+  })
+    .then((response) => {
+      if (response.ok) {
+        // Redirect to the form page
+        window.location.href = `/investor/progress/${userId}`;
+      } else {
+        console.error("Failed to fetch progress form.");
+      }
+    })
+    .catch((error) => console.error("Error:", error));
 }
 
 let sender_id = userId;

@@ -529,6 +529,16 @@ footer {
   color: #eac925;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
+
+.card {
+  margin-bottom: 20px;
+}
+.card-header {
+  background-color: #f8f9fa;
+}
+.progress-log {
+  margin-bottom: 10px;
+}
 .connect-btn {
   background-color: #007bff;
   color: white;
