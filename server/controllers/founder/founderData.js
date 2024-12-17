@@ -81,15 +81,6 @@ let exprtedMethod = {
           "Company reserves must be a valid number greater than or equal to 0."
         );
       }
-      // if (website && !isValidURL(website)) {
-      //   throw new Error("Website must be a valid URL.");
-      // }
-      // if (linkedIn && !isValidURL(linkedIn)) {
-      //   throw new Error("LinkedIn must be a valid URL.");
-      // }
-      // if (twitter && !isValidURL(twitter)) {
-      //   throw new Error("Twitter must be a valid URL.");
-      // }
 
       // Construct the new founder profile
       const newFounderProfile = {
@@ -136,13 +127,20 @@ let exprtedMethod = {
         },
       };
 
-      // Save the profile to MongoDB
-      const createdProfile = await Founder.create(newFounderProfile);
+      // Check if a profile already exists for the user and update it, or create a new one if it doesn't exist
+      const createdProfile = await Founder.findOneAndUpdate(
+        { userId: new ObjectId(userId) },
+        newFounderProfile,
+        { new: true, upsert: true }
+      );
+
       console.log(createdProfile);
       return createdProfile;
     } catch (error) {
-      console.error("Error creating founder profile:", error);
-      throw new Error(error.message || "Unable to create founder profile.");
+      console.error("Error creating or updating founder profile:", error);
+      throw new Error(
+        error.message || "Unable to create or update founder profile."
+      );
     }
   },
 
