@@ -14,6 +14,11 @@ router.route("/foundersPofileForm").get(async(req,res) => {
   } catch (e){
     return res.status(400).json({ error: "renderings error for founders form"});
   }
+}).post(async (req,res)=>{
+
+  const userId = req.session.user.id;
+  validation.checkId(userId);
+  let uniqueUser = await founderMethods.createProfile(userId);
 });
 
 // get the all list of users who are founders

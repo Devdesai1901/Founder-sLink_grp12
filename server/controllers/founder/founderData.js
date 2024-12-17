@@ -12,6 +12,11 @@ let exprtedMethod = {
     return user;
   },
 
+
+  //create Founders PRofile
+  async createProfile(userId){
+    
+  },
   // function to create a post
   async createPost(
     userId,
