@@ -17,6 +17,14 @@ document.addEventListener("DOMContentLoaded", async () => {
     window.location.href = `/founder/pitchform?userId=${userId}`;
   });
 
+  // Function to get star ratings based on totalInvestment
+  function getStarRating(totalInvestment) {
+    if (totalInvestment >= 1000000) return "★★★★★";
+    if (totalInvestment >= 600000 && totalInvestment < 800000) return "★★★";
+    if (totalInvestment >= 300000 && totalInvestment < 600000) return "★★";
+    return "★";
+  }
+
   try {
     const response = await fetch("/feed");
     const feedData = await response.json();
@@ -29,7 +37,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         feedItem.innerHTML = `
           <div class="posts">
             ${item.posts
-            .map((post) => `
+              .map((post) => `
                 <div class="post">
                   <h3>
                     <span id="${spanId}" class="name-element" data-user-id="${item.id}">${item.startUpName}</span>
@@ -46,18 +54,25 @@ document.addEventListener("DOMContentLoaded", async () => {
                   <button class="connect-btn" data-user-id="${item.id}">Connect</button>
                 </div>
               `)
-            .join("")}
+              .join("")}
           </div>
         `;
       } else if (userRole === "founder") {
+        // Add star rating based on totalInvestment
+        const starRating = getStarRating(item.totalInvestment);
+
         feedItem.innerHTML = `
           <div class="post">
             <h3>
-              <span id="${spanId}" class="name-element" data-user-id="${item.id}">${item.firstname} ${item.LastName}</span>
+              <span id="user-${item.id}" class="name-element" data-user-id="${item.id}">
+                ${item.firstname} ${item.lastname}
+              </span>
             </h3>
-            <p><strong>Investor Type:</strong> ${item.in}</p>
-            <p>${item.description}</p>
-            <button class="connect-btn" data-user-id="${item.id}">Connect</button>
+            <p><strong>Email:</strong> ${item.email}</p>
+            <p><strong>Industry:</strong> ${item.industry}</p>
+            <p><strong>Description:</strong> ${item.description}</p>
+            <p><strong>Total Investment:</strong> $${item.totalInvestment.toLocaleString()}</p>
+            <p><strong>Rating:</strong> ${starRating}</p>
           </div>
         `;
       }
@@ -81,20 +96,20 @@ document.addEventListener("DOMContentLoaded", async () => {
             targetUserId,
           }),
         })
-            .then((response) => response.json())
-            .then((data) => {
-              if (data.success) {
-                alert("Connection request sent successfully!");
-                button.disabled = true; // Disable the button
-                button.textContent = "Connected"; // Change button text
-              } else {
-                alert(data.error || "Failed to send connection request.");
-              }
-            })
-            .catch((error) => {
-              console.error("Error sending connection request:", error);
-              alert("An error occurred while sending the connection request.");
-            });
+          .then((response) => response.json())
+          .then((data) => {
+            if (data.success) {
+              alert("Connection request sent successfully!");
+              button.disabled = true; // Disable the button
+              button.textContent = "Connected"; // Change button text
+            } else {
+              alert(data.error || "Failed to send connection request.");
+            }
+          })
+          .catch((error) => {
+            console.error("Error sending connection request:", error);
+            alert("An error occurred while sending the connection request.");
+          });
       });
     });
 

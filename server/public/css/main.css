@@ -543,3 +543,45 @@ footer {
   background-color: #6c757d;
   cursor: not-allowed;
 }
+
+/* search and filter */
+
+body {
+  padding-top: 80px; /* Space below fixed navbar */
+  background-color: #f8f9fa; /* Light gray background */
+}
+
+.filter-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1030;
+  background-color: #ffffff; /* White background */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+  padding: 15px 20px;
+}
+
+.filter-container form {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.investor-list {
+  margin: 20px auto;
+  max-width: 600px;
+  padding: 0;
+}
+
+.investor-list li {
+  list-style: none;
+  background-color: #ffffff;
+  border: 1px solid #e0e0e0;
+  margin-bottom: 10px;
+  padding: 10px 15px;
+  border-radius: 5px;
+  box-shadow: 0 2px 3px rgba(0, 0, 0, 0.05);
+}
