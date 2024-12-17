@@ -2,6 +2,7 @@ import { ObjectId } from "mongodb";
 import validation from "../../utils/validation.js";
 import User from "../../models/user.js";
 import Founder from "../../models/founder.js";
+import Deal from "../../models/Deal.js";
 let exprtedMethod = {
   // function to just get the User data from User Table
   async getFounderById(id) {
@@ -55,6 +56,42 @@ let exprtedMethod = {
     const savedFounder = await founder.save();
 
     return { poststatus: true };
+  },
+
+  async getFounderrDealsDetails(founderId) {
+    validation.checkId(founderId);
+    const objectId = new ObjectId(founderId);
+
+    // Fetch all deals for the given founderId
+    const deals = await Deal.find({ founderId: objectId });
+
+    // Prepare an array to hold the deal details
+    const dealDetails = [];
+    console.log("DEALS", deals);
+    // Iterate through each deal to enrich the data
+    for (let deal of deals) {
+      // Retrieve the investor details from the populated investorId
+      const investor = await User.findOne({ _id: deal.investorId }).select(
+        "firstName lastName phoneNumber email"
+      );
+
+      console.log("Investor:", investor);
+      // Add the relevant data into the deal object
+      dealDetails.push({
+        investorId: investor._id,
+        progressLogs: deal.progressLogs, // Include the entire progressLogs array
+        status: deal.status, // Include the status of the deal
+        investorDetails: {
+          firstName: investor.firstName,
+          lastName: investor.lastName,
+          phoneNumber: investor.phoneNumber,
+          email: investor.email,
+        },
+      });
+    }
+    console.log("dealdetails:", dealDetails);
+    // Return the enriched deal details array
+    return dealDetails;
   },
   // function to just get the Founders Data from Founders Table
   async getFounderFromFounderById(id) {

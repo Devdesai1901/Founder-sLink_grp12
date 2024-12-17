@@ -1,0 +1,37 @@
+<div class="container mt-5">
+    <h1 class="mb-4">Deal Dashboard</h1>
+    {{#each investorData}}
+      <div class="card">
+        <div class="card-header">
+          <h2>Deal Details</h2>
+        </div>
+        <div class="card-body">
+          <h3>Founder Details</h3>
+           <p><strong>Status:</strong> {{this.status}}</p>
+          <p><strong>First Name:</strong> {{this.founderDetails.firstName}}</p>
+          <p><strong>Last Name:</strong> {{this.founderDetails.lastName}}</p>
+          <p><strong>Phone Number:</strong> {{this.founderDetails.phoneNumber}}</p>
+          <p><strong>Email:</strong> {{this.founderDetails.email}}</p>
+          
+          <h3>Startup Details</h3>
+          <p><strong>Startup Name:</strong> {{this.startupDetails.startupName}}</p>
+          <p><strong>Startup Industry:</strong> {{this.startupDetails.startupIndustry}}</p>
+          <p><strong>Company Description:</strong> {{this.startupDetails.companyDescription}}</p>
+          <p><strong>Funding Stage:</strong> {{this.startupDetails.fundingStage}}</p>
+          <p><strong>Amount to Raise Fund:</strong> ${{this.startupDetails.amountToRaiseFund}}</p>
+         
+          
+          <h3>Progress Logs</h3>
+          {{#each this.progressLogs}}
+            <div class="progress-log">
+              <p><strong>Date:</strong> {{this.date}}</p>
+              <p><strong>Amount:</strong> ${{this.amount}}</p>
+              <p><strong>Notes:</strong> {{this.notes}}</p>
+              <p><strong>Action:</strong> {{this.action}}</p>
+            </div>
+            <hr>
+          {{/each}}
+        </div>
+      </div>
+    {{/each}}
+  </div>
