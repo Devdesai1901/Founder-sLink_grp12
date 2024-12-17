@@ -21,6 +21,8 @@ dotenv.config();
 // Create Express app
 const app = express();
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const SESSION_COOKIE_NAME = "sessionId";
+
 // Connect to the database
 connectDB();
 
@@ -29,7 +31,7 @@ app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(session({
-  name: 'sessionId', // Session ID name
+  name: SESSION_COOKIE_NAME,
   secret: 'your-secret-key', // Secret for encrypting session
   resave: false,
   saveUninitialized: false,
@@ -61,10 +63,10 @@ app.use('/', (req, res, next) => {
   let authstate = req.session.user ? "Authenticated User" : "Non-Authenticated User";
   console.log(`[${new Date().toUTCString()}]: ${req.method} ${req.originalUrl} (${authstate})`);
   if (req.originalUrl === "/" && req.session.user && req.session.user.userType === "investor") {
-    return res.redirect("/investor");
+    return res.redirect("/investor/dashboard");
   }
   if (req.originalUrl === "/" && req.session.user && req.session.user.userType === "founder") {
-    return res.redirect("/founder");
+    return res.redirect("/founder/dashboard");
   }
   if (req.originalUrl === "/" && !req.session.user) {
     return res.redirect("/signin");
@@ -77,10 +79,10 @@ app.use('/', (req, res, next) => {
 app.use('/signin', (req, res, next) => {
   if (req.method === "GET") {
     if (req.session.user && req.session.user.userType === "investor") {
-      return res.redirect("/investor");
+      return res.redirect("/investor/dashboard");
     }
     if (req.session.user && req.session.user.userType === "founder") {
-      return res.redirect("/founder");
+      return res.redirect("/founder/dashboard");
     }
     next();
   } else {
@@ -91,10 +93,10 @@ app.use('/signin', (req, res, next) => {
 app.use('/signup', (req, res, next) => {
   if (req.method === "GET") {
     if (req.session.user && req.session.user.userType === "investor") {
-      return res.redirect("/investor");
+      return res.redirect("/investor/dashboard");
     }
     if (req.session.user && req.session.user.userType === "founder") {
-      return res.redirect("/founder");
+      return res.redirect("/founder/dashboard");
     }
     next();
   } else {
@@ -102,16 +104,24 @@ app.use('/signup', (req, res, next) => {
   }
 });
 
-app.use('/signoutuser', (req, res, next) => {
-  if (req.method === "GET") {
-    if (!req.session.user) {
-      return res.redirect("/signin");
-    }
-    next();
-  } else {
-    next();
+app.use('/signout', async (req, res) => {
+  try {
+      req.session.destroy((err) => {
+          if (err) {
+              console.error("Error destroying session:", err);
+              return res.status(500).send("Could not log out.");
+          }
+          res.clearCookie(SESSION_COOKIE_NAME); 
+          console.log("Session cleared and cookie removed.");
+          res.redirect('/signin'); 
+      });
+  } catch (error) {
+      console.error("Error during signout:", error);
+      res.status(500).send("Internal Server Error.");
   }
 });
+
+
 // Route to handle connection between users
 app.post("/connect", async (req, res) => {
   try {
