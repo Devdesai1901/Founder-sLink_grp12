@@ -76,33 +76,6 @@ app.use('/', (req, res, next) => {
   }
 });
 
-app.use('/signin', (req, res, next) => {
-  if (req.method === "GET") {
-    if (req.session.user && req.session.user.userType === "investor") {
-      return res.redirect("/investor/dashboard");
-    }
-    if (req.session.user && req.session.user.userType === "founder") {
-      return res.redirect("/founder/dashboard");
-    }
-    next();
-  } else {
-    next();
-  }
-});
-
-app.use('/signup', (req, res, next) => {
-  if (req.method === "GET") {
-    if (req.session.user && req.session.user.userType === "investor") {
-      return res.redirect("/investor/dashboard");
-    }
-    if (req.session.user && req.session.user.userType === "founder") {
-      return res.redirect("/founder/dashboard");
-    }
-    next();
-  } else {
-    next();
-  }
-});
 
 app.use('/signout', async (req, res) => {
   try {
@@ -111,9 +84,9 @@ app.use('/signout', async (req, res) => {
               console.error("Error destroying session:", err);
               return res.status(500).send("Could not log out.");
           }
-          res.clearCookie(SESSION_COOKIE_NAME); 
+          res.clearCookie(SESSION_COOKIE_NAME);
           console.log("Session cleared and cookie removed.");
-          res.redirect('/signin'); 
+          res.redirect('/signin');
       });
   } catch (error) {
       console.error("Error during signout:", error);
@@ -172,13 +145,11 @@ app.post("/connect", async (req, res) => {
 // Import authentication routes
 app.use(authRoutes);
 
-// Setup routes (other routes for your application)
 configRoutes(app);
 
-// Socket.io setup for real-time communication
 const server = http.createServer(app);
 const io = new Server(server);
-app.set("io", io); // Store io instance for later use in routes
+app.set("io", io);
 
 const usp = io.of("/user-namespace");
 
@@ -186,7 +157,6 @@ usp.on("connection", async (socket) => {
   let userId = socket.handshake.auth.token;
   userId = new ObjectId(userId);
 
-  // Update user status to online
   await User.findByIdAndUpdate({ _id: userId }, { $set: { is_online: "1" } });
   userId = userId.toString();
   socket.broadcast.emit("getOnlineUser", { user_id: userId });
@@ -214,13 +184,11 @@ usp.on("connection", async (socket) => {
     socket.emit("loadChats", { chats: oldChats });
   });
 
-  // Handle real-time connection notifications
   socket.on("newConnection", (data) => {
     socket.emit("connectionMade", data);
   });
 });
 
-// Start the server
 const PORT = process.env.PORT || 3000;
 server.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
