@@ -19,8 +19,37 @@
       <option value="Corporate">Corporate</option>
     </select><br>
 
+    <!-- Investment Preferences -->
+    <h3>Investment Preferences</h3>
+    <label for="industries">Industries:</label>
+    <select id="industries" name="industries" multiple required>
+      <option value="Technology">Technology</option>
+      <option value="Healthcare">Healthcare</option>
+      <option value="Finance">Finance</option>
+      <option value="Education">Education</option>
+      <option value="Energy">Energy</option>
+      <option value="Retail">Retail</option>
+      <option value="Agriculture">Agriculture</option>
+      <option value="Transportation">Transportation</option>
+      <option value="Entertainment">Entertainment</option>
+      <option value="Real Estate">Real Estate</option>
+    </select><br>
+
+    <label for="fundingStages">Funding Stages:</label>
+    <input type="text" id="fundingStages" name="fundingStages"><br>
+
+    <label for="geographicPreferences">Geographic Preferences:</label>
+    <input type="text" id="geographicPreferences" name="geographicPreferences"><br>
+
     <label for="minimumInvestmentAmount">Minimum Investment (USD):</label>
     <input type="number" id="minimumInvestmentAmount" name="minimumInvestmentAmount" required><br>
+
+    <label for="preferredStartupSize">Preferred Startup Size:</label>
+    <select id="preferredStartupSize" name="preferredStartupSize">
+      <option value="Small">Small</option>
+      <option value="Medium">Medium</option>
+      <option value="Large">Large</option>
+    </select><br>
 
     <!-- Contact Information -->
     <h3>Contact Information</h3>
@@ -29,6 +58,13 @@
 
     <label for="email">Email:</label>
     <input type="email" id="email" name="email" required><br>
+
+    <label for="preferredContactMethod">Preferred Contact Method:</label>
+    <select id="preferredContactMethod" name="preferredContactMethod">
+      <option value="Email">Email</option>
+      <option value="Phone">Phone</option>
+      <option value="Message">Message</option>
+    </select><br>
 
     <!-- Social Links -->
     <h3>Social Links</h3>
@@ -41,8 +77,46 @@
     <label for="twitter">Twitter:</label>
     <input type="url" id="twitter" name="twitter"><br>
 
+    <label for="personalBlog">Personal Blog:</label>
+    <input type="url" id="personalBlog" name="personalBlog"><br>
+
+    <!-- Performance Metrics -->
+    <h3>Performance Metrics</h3>
+    <div id="performanceMetricsContainer"></div>
+    <button type="button" class="btn btn-secondary add-btn" onclick="addPerformanceMetrics()">Add Performance Metrics</button>
+
+    <!-- Description -->
+    <h3>Description</h3>
+    <label for="description">Description:</label>
+    <textarea id="description" name="description"></textarea><br>
+
     <button type="submit">Submit</button>
   </form>
 </body>
-<script src="investorForm.js"></script>
+<script>
+  let performanceMetricsIndex = 1;
+  function addPerformanceMetrics() {
+    const container = document.getElementById('performanceMetricsContainer');
+    const performanceMetricsHTML = `
+      <div class="form-group">
+        <label for="totalInvested${performanceMetricsIndex}">Total Invested (USD):</label>
+        <input type="number" class="form-control" id="totalInvested${performanceMetricsIndex}" name="performanceMetrics[${performanceMetricsIndex}].totalInvested" required>
+      </div>
+      <div class="form-group">
+        <label for="returnsGenerated${performanceMetricsIndex}">Returns Generated (USD):</label>
+        <input type="number" class="form-control" id="returnsGenerated${performanceMetricsIndex}" name="performanceMetrics[${performanceMetricsIndex}].returnsGenerated" required>
+      </div>
+      <div class="form-group">
+        <label for="activeDeals${performanceMetricsIndex}">Active Deals:</label>
+        <input type="number" class="form-control" id="activeDeals${performanceMetricsIndex}" name="performanceMetrics[${performanceMetricsIndex}].activeDeals" required>
+      </div>
+      <div class="form-group">
+        <label for="portfolioValue${performanceMetricsIndex}">Portfolio Value (USD):</label>
+        <input type="number" class="form-control" id="portfolioValue${performanceMetricsIndex}" name="performanceMetrics[${performanceMetricsIndex}].portfolioValue" required>
+      </div>
+    `;
+    container.insertAdjacentHTML('beforeend', performanceMetricsHTML);
+    performanceMetricsIndex++;
+  }
+</script>
 </html>
