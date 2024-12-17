@@ -33,22 +33,30 @@ let exportedMethod = {
 
     if (!investorDetails) throw "Investor Details Not found";
 
-    const investorData = [];
+    let investorData = [];
 
     investor.forEach((user) => {
       investorDetails.forEach((userDetails) => {
         if (user._id.toString() === userDetails.userId.toString()) {
+          // Calculate total amount invested using reduce()
+          const totalInvestment = userDetails.portfolio.reduce((sum, investment) => {
+            return sum + (investment.amountInvested || 0);
+          }, 0);
+  
+          // Add the required fields, including totalInvestment
           investorData.push({
             id: user._id,
             firstname: user.firstName,
-            LastName: user.lastName,
+            lastname: user.lastName,
             email: user.email,
             industry: userDetails.investorType,
             description: userDetails.description,
+            totalInvestment: totalInvestment, // New field for total investment
           });
         }
       });
     });
+    investorData.sort((a, b) => b.totalInvestment - a.totalInvestment);
     return investorData;
   },
   async saveProgress(status, investorId, founderId, progressLog) {

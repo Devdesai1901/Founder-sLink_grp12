@@ -1,0 +1,40 @@
+<main>
+    <div id="signupView">
+        <form method="post" action="/signup" id="signup-form">
+            <label for="firstName">First Name:</label>
+            <input name="firstName" id="firstName" type="text" required> <br>
+
+            <label for="lastName">Last Name:</label>
+            <input name="lastName" id="lastName" type="text" required> <br>
+
+            <label for="email">Email:</label>
+            <input name="email" id="email" type="text" required> <br>
+
+            <label for="password">Password:</label>
+            <input name="password" id="password" type="password" required> <br>
+
+            <label for="confirmPassword">Confirm Password:</label>
+            <input name="confirmPassword" id="confirmPassword" type="password" required> <br>
+
+            <label for="phoneCode">Phone Code (country-wise):</label>
+            <input name="phoneCode" id="phoneCode" type="text" required> <br>
+
+            <label for="phoneNumber">Phone Number:</label>
+            <input name="phoneNumber" id="phoneNumber" type="text" required> <br>
+
+            <label for="dateOfBirth">Your Birth Date:</label>
+            <input name="dateOfBirth" id="dateOfBirth" type="date" required> <br>
+
+            <label for="userType">User Type:</label>
+            <select name="userType" id="userType" required>
+                <option value="founder">Founder</option>
+                <option value="investor">Investor</option>
+            </select> <br>
+
+            <button type="submit" name="submitButton" id="submitButton">Submit</button>
+        </form>
+    </div>
+    <div id="error-div" hidden></div>
+    <a href="/signin">Already have an account? Click here to sign-in</a>
+</main>
+

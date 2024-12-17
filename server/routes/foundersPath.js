@@ -64,6 +64,7 @@ router
       let { pitchTitle, pitchDescription, fundingStage, amountRequired } =
         req.body;
       let userId = req.query.userId;
+      console.log(userId)
       userId = userId.replace(/^"|"$/g, "");
       userId = validation.checkId(userId, "userId");
       pitchDescription = validation.checkString(
@@ -98,13 +99,14 @@ router
         fundingStage,
         amountRequired
       );
-      if (newpost.poststatus) {
+
+      if (newpost.postStatus) {
         return res.status(200).json(newpost);
       } else {
         return res.status(400).json({ error: "Unable to save the post" });
       }
     } catch (e) {
-      return res.status(400).json({ error: "Unable to upload the post" });
+      return res.status(400).json({ error: e.message });
     }
   });
 
@@ -126,5 +128,7 @@ router
   })
   .post()
   .put();
+
+
 
 export default router;

@@ -46,7 +46,7 @@ router.route("/dashboard/").get(async (req, res) => {
     // res.cookie("lastName", uniqueUser.lastName);
     // uniqueUser._id = uniqueUser._id.toString();
     // res.cookie("id", JSON.stringify(uniqueUser._id));
-
+  
     res.render("common/dashboard");
   } catch (e) {
     return res
@@ -121,7 +121,74 @@ router
     }
   });
 
-//route  to get all the data of Investor from Investor Table
+// save the progress for each user
+router
+  .route("/progress/:id")
+  .get(async (req, res) => {
+    try {
+      const userId = req.session.user.id;
+      console.log("USERID", userId);
+      res.render("investors/progressForm");
+    } catch (e) {
+      return res
+        .status(400)
+        .json({ error: "error in rendring  investor progress page" });
+    }
+  })
+  .post(async (req, res) => {
+    try {
+      const investorId = req.session.user.id;
+      const {
+        userId: founderId,
+        date,
+        note,
+        action,
+        amount,
+        status,
+      } = req.body;
+
+      console.log("Investor ID:", investorId);
+      console.log("Founder ID:", founderId);
+
+      // Validate and convert IDs to MongoDB ObjectIDs
+      if (
+        !mongoose.Types.ObjectId.isValid(investorId) ||
+        !mongoose.Types.ObjectId.isValid(founderId)
+      ) {
+        throw new Error("Invalid ID format");
+      }
+      const investorObjectId = new ObjectId(investorId);
+      const founderObjectId = new ObjectId(founderId);
+
+      // Create progress log object
+      const progressLog = {
+        date: new Date(date),
+        amount: Number(amount),
+        notes: note,
+        action,
+      };
+
+      // Call the saveProgress method
+      await investorMethods.saveProgress(
+        status,
+        investorObjectId,
+        founderObjectId,
+        progressLog
+      );
+
+      return res
+        .status(200)
+        .json({ message: "Progress successfully submitted!" });
+    } catch (e) {
+      console.error("Error submitting progress:", e);
+      return res
+        .status(400)
+        .json({ error: "Error in rendering investor progress page" });
+    }
+  });
+
+
+
 router
   .route("/:id")
   .get(async (req, res) => {
