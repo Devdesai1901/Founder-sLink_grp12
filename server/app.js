@@ -13,6 +13,7 @@ import cookieParser from "cookie-parser";
 import { fileURLToPath } from "url";
 import path from "path";
 import User from "./models/user.js";
+import founderForm from "./routes/foundersPath.js";
 // import mongoose from 'mongoose';
 // import Grid from 'gridfs-stream';
 // import multer from 'multer';
