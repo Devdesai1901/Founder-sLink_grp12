@@ -7,7 +7,13 @@
     <label for="date">Date:</label>
     <input type="date" name="date" id="date" required>
   </div>
-
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const dateInput = document.getElementById('date');
+    const today = new Date().toISOString().split('T')[0];
+    dateInput.setAttribute('max', today);
+  });
+</script>
   <!-- Add Note Field -->
   <div>
     <label for="note">Add Note:</label>

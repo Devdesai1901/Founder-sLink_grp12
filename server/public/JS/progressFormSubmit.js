@@ -37,10 +37,39 @@ document.addEventListener("DOMContentLoaded", function () {
       const pathSegments = window.location.pathname.split("/"); // Split the URL path into segments
       const userId = pathSegments[pathSegments.length - 1]; // Assuming userId is the last segment in the path
 
+      // Validation
+      let isValid = true;
+
+      // Validate date
+      if (!validateDate(date)) {
+        displayError("date", "Date cannot be in the future.");
+        isValid = false;
+      }
+
       if (!userId) {
         alert("User ID is required in the URL.");
         return;
       }
+      // Validate note
+      if (!checkString(note, "Note")) {
+        displayError("note", "Note is required.");
+        isValid = false;
+      }
+
+      // Validate action
+      if (!checkString(action, "Action")) {
+        displayError("action", "Action is required.");
+        isValid = false;
+      }
+
+      // Validate status
+      if (!checkString(status, "Status")) {
+        displayError("status", "Status is required.");
+        isValid = false;
+      }
+
+      // If validation fails, stop submission
+      if (!isValid) return;
 
       // Create data object
       const progressData = {
@@ -76,3 +105,37 @@ document.addEventListener("DOMContentLoaded", function () {
       }
     });
 });
+
+function displayError(inputId, message) {
+  const inputElement = document.getElementById(inputId);
+  const errorElement = document.createElement("small");
+  errorElement.className = "error-message text-danger";
+  errorElement.textContent = message;
+  inputElement.parentElement.appendChild(errorElement);
+}
+
+function checkLenCharacters(inputId, input, fieldName, min, max) {
+  if (input.length < min || input.length > max) {
+    const inputElement = document.getElementById(inputId);
+    const errorElement = document.createElement("small");
+    errorElement.className = "error-message text-danger";
+    errorElement.textContent = `${fieldName} must be between ${min} and ${max} characters long`;
+    inputElement.parentElement.appendChild(errorElement);
+    return false;
+  }
+  return true;
+}
+function checkString(strVal, varName) {
+  if (!strVal) return false;
+  if (typeof strVal !== "string") return false;
+  strVal = strVal.trim();
+  if (strVal.length === 0) return false;
+  if (!isNaN(strVal)) return false;
+  return strVal;
+}
+function validateDate(date) {
+  const selectedDate = new Date(date);
+  const today = new Date();
+  today.setHours(0, 0, 0, 0); // Set to midnight to compare only the date part
+  return selectedDate <= today;
+}

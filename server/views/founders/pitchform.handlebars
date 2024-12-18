@@ -1,29 +1,54 @@
- <div class="container mt-5">
-        <h2>Add New Pitch</h2>
-        <form id="pitchForm">
-            <div class="form-group">
-                <label for="pitchTitle">Pitch Title</label>
-                <input type="text" id="pitchTitle" name="pitchTitle" class="form-control" required>
-            </div>
-            <div class="form-group">
-                <label for="pitchDescription">Pitch Description</label>
-                <textarea id="pitchDescription" name="pitchDescription" class="form-control" rows="4" required></textarea>
-            </div>
-           
-            <div class="form-group">
-                <label for="fundingStage">Funding Stage</label>
-                <select id="fundingStage" name="fundingStage" class="form-control" required>
-                    <option value="Seed">Seed</option>
-                    <option value="Series A">Series A</option>
-                    <option value="Series B">Series B</option>
-                    <option value="IPO">IPO</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label for="amountRequired">Amount Required</label>
-                <input type="number" id="amountRequired" name="amountRequired" class="form-control" min="10000" required>
-            </div>
-            
-            <button type="submit" class="btn btn-primary">Submit</button>
-        </form>
+<div class="container mt-5">
+  <h2>Add New Pitch</h2>
+  {{#if error}}
+  <div class="alert alert-danger" role="alert">
+    {{error}}
+  </div>
+  {{/if}}
+  <form id="pitchForm" method="POST" action="/your-route">
+    <div class="form-group">
+      <label for="pitchTitle">Pitch Title</label>
+      <input
+        type="text"
+        id="pitchTitle"
+        name="pitchTitle"
+        class="form-control"
+        value="{{data.pitchTitle}}"
+        required
+      />
     </div>
+    <div class="form-group">
+      <label for="pitchDescription">Pitch Description</label>
+      <textarea
+        id="pitchDescription"
+        name="pitchDescription"
+        class="form-control"
+        rows="4"
+        required
+      >{{data.pitchDescription}}</textarea>
+    </div>
+
+    <div class="form-group">
+      <label for="fundingStage">Funding Stage</label>
+      <select id="fundingStage" name="fundingStage" class="form-control" required>
+        <option value="Seed" {{#if (eq data.fundingStage "Seed")}}selected{{/if}}>Seed</option>
+        <option value="Series A" {{#if (eq data.fundingStage "Series A")}}selected{{/if}}>Series A</option>
+        <option value="Series B" {{#if (eq data.fundingStage "Series B")}}selected{{/if}}>Series B</option>
+        <option value="IPO" {{#if (eq data.fundingStage "IPO")}}selected{{/if}}>IPO</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="amountRequired">Amount Required</label>
+      <input
+        type="number"
+        id="amountRequired"
+        name="amountRequired"
+        class="form-control"
+        value="{{data.amountRequired}}"
+        min="10000"
+        required
+      />
+    </div>
+    <button type="submit" class="btn btn-primary">Submit</button>
+  </form>
+</div>

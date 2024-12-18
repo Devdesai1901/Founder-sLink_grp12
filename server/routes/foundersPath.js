@@ -260,6 +260,7 @@ router
       console.log(userId);
       userId = userId.replace(/^"|"$/g, "");
       userId = validation.checkId(userId, "userId");
+
       pitchDescription = validation.checkString(
         pitchDescription,
         "pitchDescription"
@@ -272,16 +273,6 @@ router
       );
       pitchTitle = validation.checkString(pitchTitle, "pitchTitle");
       validation.checkLenCharacters(pitchTitle, "pitchTitle", 5, 50);
-      pitchDescription = validation.checkString(
-        pitchDescription,
-        "pitchDescription"
-      );
-      validation.checkLenCharacters(
-        pitchDescription,
-        "pitchDescription",
-        100,
-        20000
-      );
       fundingStage = validation.checkFundingStage(fundingStage, "fundingStage");
       amountRequired = validation.checkAmount(amountRequired, "amountRequired");
 
@@ -294,12 +285,18 @@ router
       );
 
       if (newpost.postStatus) {
-        return res.status(200).json(newpost);
+        return res.redirect("/founder/dashboard"); // Redirect to a success page
       } else {
-        return res.status(400).json({ error: "Unable to save the post" });
+        return res.render("founders/pitchform", {
+          error: "Unable to save the post",
+          data: req.body, // Pass submitted data back to the form
+        });
       }
     } catch (e) {
-      return res.status(400).json({ error: e.message });
+      return res.render("founders/pitchform", {
+        error: e.message,
+        data: req.body, // Pass submitted data back to the form
+      });
     }
   });
 

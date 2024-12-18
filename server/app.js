@@ -48,6 +48,7 @@ const hbs = exphbs.create({
   helpers: {
     json: (context) => JSON.stringify(context),
     formatDate: (date) => new Date(date).toLocaleDateString(),
+    eq: (a, b) => a === b,
   },
   runtimeOptions: {
     allowProtoPropertiesByDefault: true,

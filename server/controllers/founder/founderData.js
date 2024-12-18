@@ -175,7 +175,7 @@ let exprtedMethod = {
     userId = new ObjectId(userId);
     const founder = await Founder.findOne({ userId: userId });
     if (!founder) {
-      throw new Error("Founder not found");
+      throw new Error("First Complete the User Profile in profile section");
     }
 
     // Add post to founder's posts
