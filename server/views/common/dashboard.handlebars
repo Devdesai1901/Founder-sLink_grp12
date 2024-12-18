@@ -1,63 +1,66 @@
-<div class="dashboard d-flex">
-
- <div class="filter-container">
-        <form id="filter-form" class="container">
-            <input 
-                type="text" 
-                id="search-bar" 
-                class="form-control w-25"
-                placeholder="Search by name..."
-            />
-            <select id="category-filter" class="form-select w-25">
-                <option value="all">All Sectors</option>
-                <option value="tech">Technology</option>
-                <option value="finance">Finance</option>
-                <option value="health">Healthcare</option>
-            </select>
-            <button 
-                id="filter-submit" 
-                type="submit" 
-                class="btn btn-primary"
-            >
-                Submit
-            </button>
-        </form>
-    </div>
-  <div class="left-section flex-grow-1">
-    
-    <!-- Placeholder for 70% content -->
-    <div class="feed-container">
-      <div class="d-flex justify-content-between align-items-center">
-        <h2>Feed</h2>
-        <button id="addPitchButton" class="btn btn-success" style="display: none;">Add Pitch</button>
-      </div>
-      <div id="feed"></div>
-    </div>
+<div class="dashboard">
+  <!-- Filter Section -->
+  <div class="filter-container">
+    <form id="filter-form" class="container my-3">
+      <input 
+        type="text" 
+        id="search-bar" 
+        class="form-control w-25 d-inline-block"
+        placeholder="Search by name..."
+      />
+      <select id="category-filter" class="form-select w-25 d-inline-block">
+        <option value="all">All Sectors</option>
+        <option value="tech">Technology</option>
+        <option value="finance">Finance</option>
+        <option value="health">Healthcare</option>
+      </select>
+      <button 
+        id="filter-submit" 
+        type="submit" 
+        class="btn btn-primary d-inline-block"
+      >
+        Submit
+      </button>
+    </form>
   </div>
-  <div class="right-section">
-    <div class="user-list">
-      <!-- Dynamic list of users -->
-    </div>
-    <div class="chat-window hidden" id="chatWindow">
-      <div class="chat-header">
-        <span id="chatUserName"></span>
-        <div class="d-flex align-items-center justify-content-between mt-3">
-          <button class="btn btn-primary btn-sm start-vc" data-unique-user-id="">
-            <i class="bi bi-camera-video"></i> Start VC
-          </button>
-          <button class="btn btn-danger btn-sm close-chat" onclick="closeChat()">
-            <i class="bi bi-x-circle"></i> Close
-          </button>
+
+  <!-- Main Content -->
+  <div class="d-flex">
+    <div class="left-section flex-grow-1">
+      <div class="feed-container">
+        <div class="d-flex justify-content-between align-items-center">
+          <h2>Feed</h2>
+          <button id="addPitchButton" class="btn btn-success" style="display: none;">Add Pitch</button>
         </div>
+        <div id="feed"></div>
       </div>
-      <div class="chat-messages" id="chat-container">
-        <!-- Chat messages will be appended dynamically -->
+    </div>
+
+    <div class="right-section">
+      <div class="user-list">
+        <!-- Dynamic list of users -->
       </div>
-      <div class="chat-input">
-        <form id="chat-form">
-          <input type="text" id="messageInput" placeholder="Type your message...">
-          <input type="submit" value="Send Message">
-        </form>
+      <div class="chat-window hidden" id="chatWindow">
+        <div class="chat-header">
+          <span id="chatUserName"></span>
+          <div class="d-flex align-items-center justify-content-between mt-3">
+            <button class="btn btn-primary btn-sm start-vc" data-unique-user-id="">
+              <i class="bi bi-camera-video"></i> Start VC
+            </button>
+            <button class="btn btn-danger btn-sm close-chat" onclick="closeChat()">
+              <i class="bi bi-x-circle"></i> Close
+            </button>
+          </div>
+        </div>
+        <div class="chat-messages" id="chat-container">
+          <!-- Chat messages will be appended dynamically -->
+        </div>
+        <div class="chat-input">
+          <form id="chat-form">
+            <input type="text" id="messageInput" placeholder="Type your message...">
+            <input type="submit" value="Send Message">
+          </form>
+        </div>
       </div>
     </div>
   </div>

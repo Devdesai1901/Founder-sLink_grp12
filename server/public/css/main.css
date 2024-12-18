@@ -14,9 +14,12 @@ body {
   /* header start */
 
   header {
-    background-color: #007bff;
-    padding: 15px 30px;
-}
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    width: 100%;
+  }
+  
 
 header .navbar-brand {
     font-size: 1.5rem;
@@ -56,23 +59,18 @@ footer {
 
   /* main dashboard  start*/
   .dashboard {
-    display: flex;
-    height: 100%;
+    margin-top: 56px; /* Adjust for header height */
+    padding: 20px;
   }
 
+  .left-section {
+    padding-right: 15px;
+  }
 
-.left-section {
-  flex: 0 0 70%;
-  padding: 20px;
-  overflow-y: auto;
-}
-
-.right-section {
-  flex: 0 0 30%;
-  padding: 20px;
-  border-left: 1px solid #ddd;
-  overflow-y: auto;
-}
+  .right-section {
+    width: 300px; /* Fixed width for sidebar */
+  }
+  
 
 
   .user-list {
@@ -97,45 +95,27 @@ footer {
     border-radius: 50%;
     margin-right: 10px;
   }
-
   .chat-window {
-    position: fixed;
-    bottom: 0;
-    right: 0;
-    width: 30%;
-    height: 50%;
-    background-color: #fff;
     border: 1px solid #ddd;
-    border-radius: 5px 5px 0 0;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    display: flex;
-    flex-direction: column;
+    padding: 10px;
+    background-color: #f9f9f9;
   }
 
   .chat-window.hidden {
     display: none;
   }
 
-  .chat-header {
-    padding: 10px;
-    background-color: #007bff;
-    color: #fff;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
+  .chat-header,
+.chat-messages,
+.chat-input {
+  margin-bottom: 10px;
+}
 
-  .chat-messages {
-    flex: 1;
-    overflow-y: auto;
-    padding: 10px;
-  }
-
-  .chat-input {
-    display: flex;
-    padding: 10px;
-    border-top: 1px solid #ddd;
-  }
+.chat-header {
+  background-color: #007bff;
+  color: white;
+  padding: 5px;
+}
 
   .chat-input input {
     flex: 1;
@@ -402,7 +382,7 @@ cursor: pointer;
 
 /* public/css/main.css */
 .feed-container {
-  margin: 20px 0;
+  margin-top: 10px;
 }
 .feed-item {
   margin-bottom: 20px; /* Creates a gap between feed items */
@@ -623,15 +603,9 @@ body {
 }
 
 .filter-container {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  z-index: 1030;
-  background-color: #ffffff; /* White background */
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow */
-  padding: 15px 20px;
+  margin-bottom: 20px;
 }
+
 
 .filter-container form {
   display: flex;
