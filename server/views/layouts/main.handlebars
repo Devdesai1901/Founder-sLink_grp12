@@ -28,8 +28,9 @@
                     <img src="https://via.placeholder.com/40" class="rounded-circle" alt="User Image">
                 </button>
                 <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton">
-                    <li><a class="dropdown-item" href="#">Profile</a></li>
+                    <li><a class="dropdown-item" id="profile-link" href="#">Profile</a></li>
                    <li><a class="dropdown-item" href="#" id="dashboard-link">Dashboard</a></li>
+                
                     <li><a class="dropdown-item" href="/signout">Logout</a></li>
                 </ul>
             </div>
@@ -37,7 +38,7 @@
     </header>
     <div class="wrapper">
         {{{body}}}
-    <script>
+         <script>
     function getCookie(name) {
       const cookies = document.cookie.split("; ");
       for (let cookie of cookies) {
@@ -50,28 +51,32 @@
     document.addEventListener('DOMContentLoaded', function () {
       const role = getCookie("role");
       const dashboardLink = document.getElementById("dashboard-link");
-
+      const profileLink = document.getElementById("profile-link");
       if (role === "founder") {
         dashboardLink.href = "/founder/DealDashboard";
+        profileLink.href  =  "/founder/foundersPofileForm"
       } else if (role === "investor") {
         dashboardLink.href = "/investor/DealDashboard";
+        profileLink.href  =  "/investor/investorProfileForm"
       }
     });
   </script>
         {{!-- <footer class="footer text-center py-4" style="background-color: #f4f4f4;">
         <p>&copy; 2024 Founder Link. All Rights Reserved.</p>
-    </footer> --}} 
+    </footer> --}}
     </div>
 
 
 
 <script src="/public/JS/agora-rtm-sdk-1.5.1.js"></script>
 <script src="/public/JS/chat.js"></script>
-<script src="/public/JS/submitPost.js"></script>
+
 <script src="/public/JS/searchFilter.js"></script>
 <script src="/public/JS/chat.js"></script> 
 <script src="/public/JS/submitPost.js"></script>
 <script src="/public/JS/progressFormSubmit.js"></script>
+<script src="/public/JS/founderForm.js"></script>
+<script src="/public/JS/investorForm.js"></script>
 {{!-- <script src="/public/JS/investorRoleFeed.js"></script>
 <script src="/public/JS/founderSideRoleFeed.js"></script> --}}
 <script src="/public/JS/feed.js"></script>

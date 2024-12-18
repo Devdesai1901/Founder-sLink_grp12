@@ -7,7 +7,22 @@ const FounderSchema = new mongoose.Schema({
     required: true,
   },
   startupName: { type: String, required: true },
-  startupIndustry: { type: String, required: true },
+  startupIndustry: {
+    type: String,
+    enum: [
+      "Technology",
+      "Healthcare",
+      "Finance",
+      "Education",
+      "Energy",
+      "Retail",
+      "Agriculture",
+      "Transportation",
+      "Entertainment",
+      "Real Estate",
+    ],
+    required: true,
+  },
   companyDescription: { type: String, maxlength: 2000 }, // Brief description of the company
   establishYear: { type: Number, required: true }, // Year of establishment
   fundingStage: {
@@ -53,40 +68,43 @@ const FounderSchema = new mongoose.Schema({
     serviceableAvailableMarket: { type: Number }, // SAM in USD
     totalCompanyReserves: { type: Number }, // Total reserves in USD
     companySpent: {
-      salaries: { type: Number, default: 0 }, // Money spent on salaries
-      marketingCost: { type: Number, default: 0 }, // Marketing expenses
-      productRnD: { type: Number, default: 0 }, // Research and Development costs
-      miscellaneous: { type: Number, default: 0 }, // Miscellaneous expenses
+      salaries: { type: Number, default: 0, required: true }, // Money spent on salaries
+      marketingCost: { type: Number, default: 0, required: true }, // Marketing expenses
+      productRnD: { type: Number, default: 0, required: true }, // Research and Development costs
+      miscellaneous: { type: Number, default: 0, required: true }, // Miscellaneous expenses
     },
     revenueHistory: [
-      { year: Number, revenue: Number }, // Data for plotting Revenue Graph
+      {
+        year: { type: Number, required: true },
+        revenue: { type: Number, required: true },
+      }, // Data for plotting Revenue Graph
     ],
     equityDilutionHistory: [
       {
-        year: Number,
-        dilutionPercentage: Number, // Percentage of equity diluted
+        year: { type: Number, required: true },
+        dilutionPercentage: { type: Number, required: true }, // Percentage of equity diluted
         nameOfInvestor: { type: String, required: true }, // Name of the investor
       },
     ],
   },
-  majorCompetitors: [String], // List of competitors
+  majorCompetitors: { type: [String], required: true }, // List of competitors
   milestones: [
     {
-      milestoneName: { type: String },
-      dateAchieved: { type: Date },
-      description: { type: String },
+      milestoneName: { type: String, required: true },
+      dateAchieved: { type: Date, required: true },
+      description: { type: String, required: true },
     },
   ],
   keyMetrics: {
-    valuation: { type: Number }, // Current valuation in USD
-    profitMargin: { type: Number }, // Profit margin as a percentage
-    totalFundingReceived: { type: Number }, // Total funding in USD
-    teamSize: { type: Number }, // Number of team members (can match numberOfEmployees or include contractors)
+    valuation: { type: Number, required: true }, // Current valuation in USD
+    profitMargin: { type: Number, required: true }, // Profit margin as a percentage
+    totalFundingReceived: { type: Number, required: true }, // Total funding in USD
+    teamSize: { type: Number, required: true }, // Number of team members (can match numberOfEmployees or include contractors)
   },
   traction: {
-    monthlyActiveUsers: { type: Number }, // Active users per month
-    customerRetentionRate: { type: Number }, // Retention rate as a percentage
-    annualRecurringRevenue: { type: Number }, // ARR for subscription-based startups
+    monthlyActiveUsers: { type: Number, required: true }, // Active users per month
+    customerRetentionRate: { type: Number, required: true }, // Retention rate as a percentage
+    annualRecurringRevenue: { type: Number, required: true }, // ARR for subscription-based startups
   },
   socialLinks: {
     website: { type: String },

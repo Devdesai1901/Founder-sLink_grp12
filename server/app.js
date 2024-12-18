@@ -30,13 +30,15 @@ connectDB();
 app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(session({
-  name: SESSION_COOKIE_NAME,
-  secret: 'your-secret-key', // Secret for encrypting session
-  resave: false,
-  saveUninitialized: false,
-  cookie: { secure: false } // Set 'secure: true' if you're using https
-}));
+app.use(
+  session({
+    name: SESSION_COOKIE_NAME,
+    secret: "your-secret-key", // Secret for encrypting session
+    resave: false,
+    saveUninitialized: false,
+    cookie: { secure: false }, // Set 'secure: true' if you're using https
+  })
+);
 
 // Handlebars view engine setup
 const hbs = exphbs.create({
@@ -59,13 +61,27 @@ app.set("view engine", "handlebars");
 app.use("/public", express.static(path.join(__dirname, "public")));
 
 // Middleware to handle route-specific behavior
-app.use('/', (req, res, next) => {
-  let authstate = req.session.user ? "Authenticated User" : "Non-Authenticated User";
-  console.log(`[${new Date().toUTCString()}]: ${req.method} ${req.originalUrl} (${authstate})`);
-  if (req.originalUrl === "/" && req.session.user && req.session.user.userType === "investor") {
+app.use("/", (req, res, next) => {
+  let authstate = req.session.user
+    ? "Authenticated User"
+    : "Non-Authenticated User";
+  console.log(
+    `[${new Date().toUTCString()}]: ${req.method} ${
+      req.originalUrl
+    } (${authstate})`
+  );
+  if (
+    req.originalUrl === "/" &&
+    req.session.user &&
+    req.session.user.userType === "investor"
+  ) {
     return res.redirect("/investor/dashboard");
   }
-  if (req.originalUrl === "/" && req.session.user && req.session.user.userType === "founder") {
+  if (
+    req.originalUrl === "/" &&
+    req.session.user &&
+    req.session.user.userType === "founder"
+  ) {
     return res.redirect("/founder/dashboard");
   }
   if (req.originalUrl === "/" && !req.session.user) {
@@ -76,24 +92,22 @@ app.use('/', (req, res, next) => {
   }
 });
 
-
-app.use('/signout', async (req, res) => {
+app.use("/signout", async (req, res) => {
   try {
-      req.session.destroy((err) => {
-          if (err) {
-              console.error("Error destroying session:", err);
-              return res.status(500).send("Could not log out.");
-          }
-          res.clearCookie(SESSION_COOKIE_NAME);
-          console.log("Session cleared and cookie removed.");
-          res.redirect('/signin');
-      });
+    req.session.destroy((err) => {
+      if (err) {
+        console.error("Error destroying session:", err);
+        return res.status(500).send("Could not log out.");
+      }
+      res.clearCookie(SESSION_COOKIE_NAME);
+      console.log("Session cleared and cookie removed.");
+      res.redirect("/signin");
+    });
   } catch (error) {
-      console.error("Error during signout:", error);
-      res.status(500).send("Internal Server Error.");
+    console.error("Error during signout:", error);
+    res.status(500).send("Internal Server Error.");
   }
 });
-
 
 // Route to handle connection between users
 app.post("/connect", async (req, res) => {
@@ -108,7 +122,10 @@ app.post("/connect", async (req, res) => {
     const sourceUserId = sanitizeId(req.body.sourceUserId);
     const targetUserId = sanitizeId(req.body.targetUserId);
 
-    if (!mongoose.Types.ObjectId.isValid(sourceUserId) || !mongoose.Types.ObjectId.isValid(targetUserId)) {
+    if (
+      !mongoose.Types.ObjectId.isValid(sourceUserId) ||
+      !mongoose.Types.ObjectId.isValid(targetUserId)
+    ) {
       return res.status(400).json({ error: "Invalid user ID format." });
     }
 
@@ -119,7 +136,10 @@ app.post("/connect", async (req, res) => {
       return res.status(404).json({ error: "One or both users not found." });
     }
 
-    const existingConnection = await Connection.findOne({ sourceUserId, targetUserId });
+    const existingConnection = await Connection.findOne({
+      sourceUserId,
+      targetUserId,
+    });
     if (existingConnection) {
       return res.status(400).json({ error: "Connection already exists." });
     }
@@ -132,15 +152,14 @@ app.post("/connect", async (req, res) => {
       io.emit("newConnection", { sourceUserId, targetUserId });
     }
 
-    return res.status(200).json({ success: true, message: "Connection successful." });
+    return res
+      .status(200)
+      .json({ success: true, message: "Connection successful." });
   } catch (error) {
     console.error("Error connecting users:", error);
     res.status(500).json({ error: "Internal server error." });
   }
 });
-
-
-
 
 // Import authentication routes
 app.use(authRoutes);

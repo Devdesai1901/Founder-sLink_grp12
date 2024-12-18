@@ -1,5 +1,5 @@
-//investor Schema
 import mongoose from "mongoose";
+
 const InvestorSchema = new mongoose.Schema({
   userId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
   investorType: {
@@ -14,7 +14,22 @@ const InvestorSchema = new mongoose.Schema({
     required: true,
   }, // Type of investor
   investmentPreferences: {
-    industries: [String],
+    industries: {
+      type: [String],
+      enum: [
+        "Technology",
+        "Healthcare",
+        "Finance",
+        "Education",
+        "Energy",
+        "Retail",
+        "Agriculture",
+        "Transportation",
+        "Entertainment",
+        "Real Estate",
+      ],
+      required: true,
+    },
     fundingStages: [String],
     geographicPreferences: [String],
     minimumInvestmentAmount: { type: Number }, // Minimum amount investor is willing to invest

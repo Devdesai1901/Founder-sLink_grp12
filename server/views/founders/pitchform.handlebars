@@ -23,6 +23,45 @@
                 <label for="amountRequired">Amount Required</label>
                 <input type="number" id="amountRequired" name="amountRequired" class="form-control" min="10000" required>
             </div>
+            <!--Video uploader-->
+
+            // Handle Video Upload
+            document.getElementById('uploadForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = new FormData(e.target);
+            const response = await fetch('/upload', {
+                method: 'POST',
+                body: formData,
+            });
+            if (response.ok) {
+                alert('Video uploaded successfully!');
+                loadVideos();
+            } else {
+                alert('Error uploading video');
+            }
+            });
+            // Fetch and Display Videos
+            async function loadVideos() {
+            const response = await fetch('/videos');
+            const videos = await response.json();
+            const videoList = document.getElementById('videoList');
+            videoList.innerHTML = '';
+            videos.forEach((video) => {
+                const videoElement = `
+                <div class="video">
+                    <h3>${video.filename}</h3>
+                    <video controls>
+                    <source src="/video/${video._id}" type="${video.contentType}">
+                    Your browser does not support the video tag.
+                    </video>
+                </div>
+                `;
+                videoList.innerHTML += videoElement;
+            });
+            }
+            // Load videos on page load
+            document.addEventListener('DOMContentLoaded', loadVideos);
+        </script>
             <button type="submit" class="btn btn-primary">Submit</button>
         </form>
     </div>
