@@ -1,0 +1,29 @@
+ <div class="container mt-5">
+    <h1 class="mb-4">Deal Dashboard</h1>
+    {{#each dealDetails}}
+      <div class="card">
+        <div class="card-header">
+          <h2>Deal Details</h2>
+        </div>
+        <div class="card-body">
+          <h3>Investor Details</h3>
+          <p><strong>First Name:</strong> {{this.investorDetails.firstName}}</p>
+          <p><strong>Last Name:</strong> {{this.investorDetails.lastName}}</p>
+          <p><strong>Phone Number:</strong> {{this.investorDetails.phoneNumber}}</p>
+          <p><strong>Email:</strong> {{this.investorDetails.email}}</p>
+          <p><strong>Status:</strong> {{this.status}}</p>
+          
+          <h3>Progress Logs</h3>
+          {{#each this.progressLogs}}
+            <div class="progress-log">
+              <p><strong>Date:</strong> {{this.date}}</p>
+              <p><strong>Amount:</strong> ${{this.amount}}</p>
+              <p><strong>Notes:</strong> {{this.notes}}</p>
+              <p><strong>Action:</strong> {{this.action}}</p>
+            </div>
+            <hr>
+          {{/each}}
+        </div>
+      </div>
+    {{/each}}
+  </div>

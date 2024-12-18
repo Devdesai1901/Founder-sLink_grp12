@@ -2,14 +2,6 @@ document.addEventListener("DOMContentLoaded", async () => {
   const feedContainer = document.getElementById("feed");
   const addPitchButton = document.getElementById("addPitchButton");
 
-  // Function to get the value of a specific cookie
-  function getCookie(name) {
-    const value = `; ${document.cookie}`;
-    const parts = value.split(`; ${name}=`);
-
-    if (parts.length === 2) return parts.pop().split(";").shift();
-  }
-
   const userRole = getCookie("role");
   const userId = getCookie("id");
   console.log("User Role:", userRole);
@@ -25,51 +17,62 @@ document.addEventListener("DOMContentLoaded", async () => {
     window.location.href = `/founder/pitchform?userId=${userId}`;
   });
 
+  // Function to get star ratings based on totalInvestment
+  function getStarRating(totalInvestment) {
+    if (totalInvestment >= 1000000) return "★★★★★";
+    if (totalInvestment >= 600000 && totalInvestment < 800000) return "★★★";
+    if (totalInvestment >= 300000 && totalInvestment < 600000) return "★★";
+    return "★";
+  }
+
   try {
     const response = await fetch("/feed");
     const feedData = await response.json();
-    console.log("Feed Data:", feedData);
+
     feedData.forEach((item) => {
       const feedItem = document.createElement("div");
-
-      let spanId =
-        userRole === "founder" ? "nameElementInvestor" : "nameElement";
+      let spanId = userRole === "founder" ? "nameElementInvestor" : "nameElement";
 
       if (userRole === "investor") {
         feedItem.innerHTML = `
           <div class="posts">
             ${item.posts
-              .map(
-                (post) => `
-              <div class="post">
-                <h3>
-                  <span id="${spanId}" class="name-element" data-user-id="${item.id}">${item.startUpName}</span>
-                </h3>
-                <p><strong>Founder:</strong> 
-                <span id="${spanId}" class="name-element" data-user-id="${item.id}">${item.firstname} ${item.LastName}</span>
-                </p>
-                <h4>${post.pitchTitle}</h4>
-                <p>${post.pitchDescription}</p>
-                <p><strong>Industry:</strong> ${item.industry}</p>
-                <p><strong>Funding Stage:</strong> ${post.fundingStage}</p>
-                <p><strong>Amount Required:</strong> $${post.amountRequired}</p>
-                <p><strong>Likes:</strong> ${post.likes}</p>
-                <button class="connect-btn" data-user-id="${item.id}">Connect</button>
-              </div>
-            `
-              )
+              .map((post) => `
+                <div class="post">
+                  <h3>
+                    <span id="${spanId}" class="name-element" data-user-id="${item.id}">${item.startUpName}</span>
+                  </h3>
+                  <p><strong>Founder:</strong> 
+                    <span id="${spanId}" class="name-element" data-user-id="${item.id}">${item.firstname} ${item.LastName}</span>
+                  </p>
+                  <h4>${post.pitchTitle}</h4>
+                  <p>${post.pitchDescription}</p>
+                  <p><strong>Industry:</strong> ${item.industry}</p>
+                  <p><strong>Funding Stage:</strong> ${post.fundingStage}</p>
+                  <p><strong>Amount Required:</strong> $${post.amountRequired}</p>
+                  <p><strong>Likes:</strong> ${post.likes}</p>
+                  <button class="connect-btn" data-user-id="${item.id}">Connect</button>
+                </div>
+              `)
               .join("")}
           </div>
         `;
       } else if (userRole === "founder") {
+        // Add star rating based on totalInvestment
+        const starRating = getStarRating(item.totalInvestment);
+
         feedItem.innerHTML = `
           <div class="post">
             <h3>
-              <span id="${spanId}" class="name-element" data-user-id="${item.id}">${item.firstname} ${item.LastName}</span>
+              <span id="user-${item.id}" class="name-element" data-user-id="${item.id}">
+                ${item.firstname} ${item.lastname}
+              </span>
             </h3>
-            <p><strong>Investor Type:</strong> ${item.in}</p>
-            <p>${item.description}</p>
-            <button class="connect-btn" data-user-id="${item.id}">Connect</button>
+            <p><strong>Email:</strong> ${item.email}</p>
+            <p><strong>Industry:</strong> ${item.industry}</p>
+            <p><strong>Description:</strong> ${item.description}</p>
+            <p><strong>Total Investment:</strong> $${item.totalInvestment.toLocaleString()}</p>
+            <p><strong>Rating:</strong> ${starRating}</p>
           </div>
         `;
       }
@@ -93,11 +96,14 @@ document.addEventListener("DOMContentLoaded", async () => {
             targetUserId,
           }),
         })
-          .then((response) => {
-            if (response.ok) {
+          .then((response) => response.json())
+          .then((data) => {
+            if (data.success) {
               alert("Connection request sent successfully!");
+              button.disabled = true; // Disable the button
+              button.textContent = "Connected"; // Change button text
             } else {
-              alert("Failed to send connection request.");
+              alert(data.error || "Failed to send connection request.");
             }
           })
           .catch((error) => {

@@ -55,7 +55,7 @@ const exportedMethods ={
         if (!domain || !domain.includes(".")) {
             throw new Error(`Invalid email domain.`);
         }
-        return email;
+        return email.trim().toLowerCase();
     },
     validValues(nameofString, strID, compare1, compare2) {
         //checks if given string is one of the two values

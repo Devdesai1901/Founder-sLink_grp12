@@ -18,7 +18,6 @@ export const signUpUser = async (
     userType
 ) => {
   try {
-    // Validate inputs using helper functions
     firstName = helper.stringVerifyer("First Name", firstName, true, 2, 25);
     lastName = helper.stringVerifyer("Last Name", lastName, true, 2, 25);
     email = helper.emailVerifyer(email);
@@ -29,16 +28,12 @@ export const signUpUser = async (
     dateOfBirth = helper.dateOfBirthVerifyer(dateOfBirth);
     userType = helper.validValues("User Type", userType.toLowerCase(), "investor", "founder");
 
-    // Check if email already exists
-    const existingUser = await User.findOne({ email });
+    const existingUser = await User.findOne({ email: email.trim().toLowerCase() });
     if (existingUser) {
-      throw new Error(`A user with this email already exists.`);
+      return { signupCompleted: false, error: "A user with this email already exists." };
     }
 
-    // Hash the password
     const hash = await bcrypt.hash(password, rounds);
-
-    // Create a new user
     const newUser = new User({
       firstName,
       lastName,
@@ -50,7 +45,6 @@ export const signUpUser = async (
       userType
     });
 
-    // Save the user to the database
     const savedUser = await newUser.save();
     if (!savedUser) {
       throw new Error("Could not add user.");
@@ -66,26 +60,20 @@ export const signUpUser = async (
 // Signin User
 export const signInUser = async (email, password) => {
   try {
-    // Validate inputs using helper functions
     email = helper.emailVerifyer(email);
     password = helper.stringVerifyer("Password", password, false, 8);
     helper.passwordVerifyer(password);
-
-    // Find the user by email
+    email = email.trim().toLowerCase();
     const user = await User.findOne({ email });
     console.log(user)
 
     if (!user) {
       throw new Error("Either the email or password is invalid.");
     }
-
-    // Compare the provided password with the stored hash
     const match = await bcrypt.compare(password, user.password);
     if (!match) {
       throw new Error("Either the email or password is invalid.");
     }
-
-    // Return user details (excluding sensitive data like password)
     return {
       id: user._id,
       firstName: user.firstName,

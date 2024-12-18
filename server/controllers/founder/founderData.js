@@ -1,17 +1,10 @@
 import { ObjectId } from "mongodb";
 import validation from "../../utils/validation.js";
 import User from "../../models/user.js";
+import Investor from "../../models/investor.js";
 import Founder from "../../models/founder.js";
-
-// Helper function to validate URLs
-// function isValidURL(url) {
-//   try {
-//     new URL(url);
-//     return true;
-//   } catch {
-//     return false;
-//   }
-// }
+import Deal from "../../models/Deal.js";
+import nodemailer from "nodemailer";
 let exprtedMethod = {
   // function to just get the User data from User Table
   async getFounderById(id) {
@@ -145,6 +138,7 @@ let exprtedMethod = {
   },
 
   // function to create a post
+
   async createPost(
     userId,
     pitchTitle,
@@ -152,6 +146,7 @@ let exprtedMethod = {
     fundingStage,
     amountRequired
   ) {
+    // Validate inputs
     userId = validation.checkId(userId);
     pitchTitle = validation.checkString(pitchTitle, "pitchTitle");
     validation.checkLenCharacters(pitchTitle, "pitchTitle", 5, 50);
@@ -166,27 +161,108 @@ let exprtedMethod = {
       20000
     );
     fundingStage = validation.checkFundingStage(fundingStage, "fundingStage");
-
     amountRequired = validation.checkAmount(amountRequired, "amountRequired");
 
+    // Create new post object
     const newPost = {
       pitchTitle,
       pitchDescription,
       fundingStage,
       amountRequired,
     };
+
+    // Fetch founder using userId
     userId = new ObjectId(userId);
     const founder = await Founder.findOne({ userId: userId });
-
     if (!founder) {
       throw new Error("Founder not found");
     }
 
+    // Add post to founder's posts
     founder.posts.push(newPost);
+    await founder.save();
 
-    const savedFounder = await founder.save();
+    // Fetch investors from the same industry
+    const investors = await Investor.find({
+      "investmentPreferences.industries": founder.startupIndustry,
+    });
 
-    return { poststatus: true };
+    // Extract investor user IDs
+    const investorUserIds = investors.map((investor) => investor.userId);
+
+    // Fetch investor user details
+    const investorsUser = await User.find({ _id: { $in: investorUserIds } });
+
+    // Configure nodemailer transporter
+    const transporter = nodemailer.createTransport({
+      service: "gmail", // Use 'gmail' for Gmail's SMTP
+      auth: {
+        user: "linkfounders@gmail.com", // Your Gmail address
+        pass: "kfks zrxj uafb ggvc", // Your App Password
+      },
+    });
+
+    // Prepare and send emails
+    if (investorsUser.length > 0) {
+      const emailPromises = investorsUser.map((investorUser) => {
+        const emailMessage = {
+          from: "linkfounders@gmail.com",
+          to: investorUser.email,
+          subject: `New Pitch from ${founder.name}`,
+          text: `Hello ${investorUser.name},
+        ${founder.name} has created a new pitch titled "${pitchTitle}". Here's a brief description:
+        ${pitchDescription}
+        Funding Stage: ${fundingStage}
+        Amount Required: $${amountRequired}
+        If you're interested, please log in to the platform for more details.
+
+        Best regards,
+        The Platform Team`,
+        };
+        return transporter.sendMail(emailMessage);
+      });
+
+      // Wait for all emails to be sent
+      await Promise.all(emailPromises);
+    }
+
+    return { postStatus: true, emailsSent: investorsUser.length > 0 };
+  },
+
+  async getFounderrDealsDetails(founderId) {
+    validation.checkId(founderId);
+    const objectId = new ObjectId(founderId);
+
+    // Fetch all deals for the given founderId
+    const deals = await Deal.find({ founderId: objectId });
+
+    // Prepare an array to hold the deal details
+    const dealDetails = [];
+    console.log("DEALS", deals);
+    // Iterate through each deal to enrich the data
+    for (let deal of deals) {
+      // Retrieve the investor details from the populated investorId
+      const investor = await User.findOne({ _id: deal.investorId }).select(
+        "firstName lastName phoneNumber email"
+      );
+
+      console.log("Investor:", investor);
+      // Add the relevant data into the deal object
+      dealDetails.push({
+        investorId: investor._id,
+        progressLogs: deal.progressLogs, // Include the entire progressLogs array
+        status: deal.status, // Include the status of the deal
+        investorDetails: {
+          firstName: investor.firstName,
+          lastName: investor.lastName,
+          phoneNumber: investor.phoneNumber,
+          email: investor.email,
+        },
+      });
+    }
+    console.log("dealdetails:", dealDetails);
+    // Return the enriched deal details array
+    return dealDetails;
   },
   // function to just get the Founders Data from Founders Table
   async getFounderFromFounderById(id) {

@@ -13,18 +13,16 @@ import cookieParser from "cookie-parser";
 import { fileURLToPath } from "url";
 import path from "path";
 import User from "./models/user.js";
-import founderForm from "./routes/foundersPath.js";
-// import mongoose from 'mongoose';
-// import Grid from 'gridfs-stream';
-// import multer from 'multer';
-// import { GridFsStorage } from 'multer-gridfs-storage';
-// import { dirname } from 'path';
+import mongoose from "mongoose";
+import Connection from "./models/connection.js";
 
 dotenv.config();
 
 // Create Express app
 const app = express();
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const SESSION_COOKIE_NAME = "sessionId";
+
 // Connect to the database
 connectDB();
 
@@ -32,13 +30,15 @@ connectDB();
 app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(session({
-  name: 'sessionId', // Session ID name
-  secret: 'your-secret-key', // Secret for encrypting session
-  resave: false,
-  saveUninitialized: false,
-  cookie: { secure: false } // Set 'secure: true' if you're using https
-}));
+app.use(
+  session({
+    name: SESSION_COOKIE_NAME,
+    secret: "your-secret-key", // Secret for encrypting session
+    resave: false,
+    saveUninitialized: false,
+    cookie: { secure: false }, // Set 'secure: true' if you're using https
+  })
+);
 
 // Handlebars view engine setup
 const hbs = exphbs.create({
@@ -61,14 +61,28 @@ app.set("view engine", "handlebars");
 app.use("/public", express.static(path.join(__dirname, "public")));
 
 // Middleware to handle route-specific behavior
-app.use('/', (req, res, next) => {
-  let authstate = req.session.user ? "Authenticated User" : "Non-Authenticated User";
-  console.log(`[${new Date().toUTCString()}]: ${req.method} ${req.originalUrl} (${authstate})`);
-  if (req.originalUrl === "/" && req.session.user && req.session.user.userType === "investor") {
-    return res.redirect("/investor");
+app.use("/", (req, res, next) => {
+  let authstate = req.session.user
+    ? "Authenticated User"
+    : "Non-Authenticated User";
+  console.log(
+    `[${new Date().toUTCString()}]: ${req.method} ${
+      req.originalUrl
+    } (${authstate})`
+  );
+  if (
+    req.originalUrl === "/" &&
+    req.session.user &&
+    req.session.user.userType === "investor"
+  ) {
+    return res.redirect("/investor/dashboard");
   }
-  if (req.originalUrl === "/" && req.session.user && req.session.user.userType === "founder") {
-    return res.redirect("/founder");
+  if (
+    req.originalUrl === "/" &&
+    req.session.user &&
+    req.session.user.userType === "founder"
+  ) {
+    return res.redirect("/founder/dashboard");
   }
   if (req.originalUrl === "/" && !req.session.user) {
     return res.redirect("/signin");
@@ -78,63 +92,90 @@ app.use('/', (req, res, next) => {
   }
 });
 
-app.use('/signin', (req, res, next) => {
-  if (req.method === "GET") {
-    if (req.session.user && req.session.user.userType === "investor") {
-      return res.redirect("/investor");
-    }
-    if (req.session.user && req.session.user.userType === "founder") {
-      return res.redirect("/founder");
-    }
-    next();
-  } else {
-    next();
+app.use("/signout", async (req, res) => {
+  try {
+    req.session.destroy((err) => {
+      if (err) {
+        console.error("Error destroying session:", err);
+        return res.status(500).send("Could not log out.");
+      }
+      res.clearCookie(SESSION_COOKIE_NAME);
+      console.log("Session cleared and cookie removed.");
+      res.redirect("/signin");
+    });
+  } catch (error) {
+    console.error("Error during signout:", error);
+    res.status(500).send("Internal Server Error.");
   }
 });
 
-app.use('/signup', (req, res, next) => {
-  if (req.method === "GET") {
-    if (req.session.user && req.session.user.userType === "investor") {
-      return res.redirect("/investor");
-    }
-    if (req.session.user && req.session.user.userType === "founder") {
-      return res.redirect("/founder");
-    }
-    next();
-  } else {
-    next();
-  }
-});
+// Route to handle connection between users
+app.post("/connect", async (req, res) => {
+  try {
+    const sanitizeId = (id) => {
+      if (typeof id === "string" && id.startsWith('"') && id.endsWith('"')) {
+        return id.slice(1, -1);
+      }
+      return id;
+    };
 
-app.use('/signoutuser', (req, res, next) => {
-  if (req.method === "GET") {
-    if (!req.session.user) {
-      return res.redirect("/signin");
+    const sourceUserId = sanitizeId(req.body.sourceUserId);
+    const targetUserId = sanitizeId(req.body.targetUserId);
+
+    if (
+      !mongoose.Types.ObjectId.isValid(sourceUserId) ||
+      !mongoose.Types.ObjectId.isValid(targetUserId)
+    ) {
+      return res.status(400).json({ error: "Invalid user ID format." });
     }
-    next();
-  } else {
-    next();
+
+    const sourceUser = await User.findById(sourceUserId);
+    const targetUser = await User.findById(targetUserId);
+
+    if (!sourceUser || !targetUser) {
+      return res.status(404).json({ error: "One or both users not found." });
+    }
+
+    const existingConnection = await Connection.findOne({
+      sourceUserId,
+      targetUserId,
+    });
+    if (existingConnection) {
+      return res.status(400).json({ error: "Connection already exists." });
+    }
+
+    const newConnection = new Connection({ sourceUserId, targetUserId });
+    await newConnection.save();
+
+    const io = req.app.get("io");
+    if (io) {
+      io.emit("newConnection", { sourceUserId, targetUserId });
+    }
+
+    return res
+      .status(200)
+      .json({ success: true, message: "Connection successful." });
+  } catch (error) {
+    console.error("Error connecting users:", error);
+    res.status(500).json({ error: "Internal server error." });
   }
 });
 
 // Import authentication routes
 app.use(authRoutes);
 
-// Setup routes (other routes for your application)
 configRoutes(app);
 
-// Socket.io setup for real-time communication
 const server = http.createServer(app);
 const io = new Server(server);
-const usp = io.of("/user-namespace");
+app.set("io", io);
 
-let userSocketMap = {};
+const usp = io.of("/user-namespace");
 
 usp.on("connection", async (socket) => {
   let userId = socket.handshake.auth.token;
   userId = new ObjectId(userId);
 
-  // Update user status to online
   await User.findByIdAndUpdate({ _id: userId }, { $set: { is_online: "1" } });
   userId = userId.toString();
   socket.broadcast.emit("getOnlineUser", { user_id: userId });
@@ -161,94 +202,12 @@ usp.on("connection", async (socket) => {
     });
     socket.emit("loadChats", { chats: oldChats });
   });
+
+  socket.on("newConnection", (data) => {
+    socket.emit("connectionMade", data);
+  });
 });
 
-//upload code
-
-
-// Middleware
-// app.use(express.json());
-// app.use(express.urlencoded({ extended: true }));
-
-// // Setup __dirname equivalent for ES Modules
-// const __filename = fileURLToPath(import.meta.url);
-// // const __dirname = dirname(__filename);
-
-// // MongoDB Connection
-// const mongoURI = 'mongodb://localhost:27017/videos';
-// const conn = mongoose.createConnection(mongoURI, {
-//   useNewUrlParser: true,
-//   useUnifiedTopology: true,
-// });
-
-// // Initialize GridFS
-// let gfs;
-// conn.once('open', () => {
-//   gfs = Grid(conn.db, mongoose.mongo);
-//   gfs.collection('videos');
-//   console.log('GridFS Initialized');
-// });
-
-// // Configure GridFS Storage
-// const storage = new GridFsStorage({
-//   url: mongoURI,
-//   file: (req, file) => ({
-//     filename: `${Date.now()}${path.extname(file.originalname)}`,
-//     bucketName: 'videos',
-//   }),
-// });
-
-// const upload = multer({ storage });
-
-// // Route to Upload Video
-// app.post('/upload', upload.single('video'), (req, res) => {
-//   res
-//     .status(201)
-//     .json({ fileId: req.file.id, message: 'Video uploaded successfully!' });
-// });
-
-// // Route to Stream Video
-// app.get('/video/:id', async (req, res) => {
-//   try {
-//     const file = await gfs.files.findOne({
-//       _id: new mongoose.Types.ObjectId(req.params.id),
-//     });
-
-//     if (!file) {
-//       return res.status(404).send('File not found');
-//     }
-
-//     const readStream = gfs.createReadStream(file._id);
-//     res.set('Content-Type', file.contentType);
-//     readStream.pipe(res);
-//   } catch (error) {
-//     console.error('Error retrieving video:', error.message);
-//     res.status(500).send('Error retrieving video');
-//   }
-// });
-
-// // Route to List All Videos
-// app.get('/videos', async (req, res) => {
-//   try {
-//     const files = await gfs.files.find().toArray();
-//     if (!files || files.length === 0) {
-//       return res.status(404).send('No videos found');
-//     }
-//     res.json(files);
-//   } catch (error) {
-//     console.error('Error fetching video list:', error.message);
-//     res.status(500).send('Error fetching video list');
-//   }
-// });
-
-// // Static Files
-// app.use(express.static(path.join(__dirname, 'public')));
-
-// Server Initialization
-// const PORT = process.env.PORT || 3000;
-// app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));
-
-// Start the server
 const PORT = process.env.PORT || 3000;
 server.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);

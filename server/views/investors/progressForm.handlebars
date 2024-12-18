@@ -1,0 +1,41 @@
+<form action="/investors/progress/id" method="POST">
+  <!-- Hidden User ID Field -->
+ 
+
+  <!-- Date Field -->
+  <div>
+    <label for="date">Date:</label>
+    <input type="date" name="date" id="date" required>
+  </div>
+
+  <!-- Add Note Field -->
+  <div>
+    <label for="note">Add Note:</label>
+    <input type="text" name="note" id="note" required>
+  </div>
+
+  <!-- Action Field -->
+  <div>
+    <label for="action">Action:</label>
+    <input type="text" name="action" id="action" required>
+  </div>
+
+  <!-- Amount Field -->
+  <div>
+    <label for="amount">Amount:</label>
+    <input type="number" name="amount" id="amount" required>
+  </div>
+
+  <!-- Status Field -->
+  <div>
+    <label for="status">Status:</label>
+    <select name="status" id="status" required>
+      <option value="Pending" selected>Pending</option>
+      <option value="Completed">Completed</option>
+      <option value="Canceled">Canceled</option>
+    </select>
+  </div>
+
+  <!-- Submit Button -->
+  <button type="submit" id="submitProgress">Submit</button>
+</form>

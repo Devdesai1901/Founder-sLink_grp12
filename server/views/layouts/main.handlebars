@@ -30,7 +30,8 @@
                 <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton">
                     <li><a class="dropdown-item" id="profile-link" href="#">Profile</a></li>
                    <li><a class="dropdown-item" href="#" id="dashboard-link">Dashboard</a></li>
-                    <li><a class="dropdown-item" href="#">Logout</a></li>
+                
+                    <li><a class="dropdown-item" href="/signout">Logout</a></li>
                 </ul>
             </div>
         </div>
@@ -69,12 +70,18 @@
 
 <script src="/public/JS/agora-rtm-sdk-1.5.1.js"></script>
 <script src="/public/JS/chat.js"></script>
+
+<script src="/public/JS/searchFilter.js"></script>
+<script src="/public/JS/chat.js"></script> 
 <script src="/public/JS/submitPost.js"></script>
+<script src="/public/JS/progressFormSubmit.js"></script>
 <script src="/public/JS/founderForm.js"></script>
 <script src="/public/JS/investorForm.js"></script>
 {{!-- <script src="/public/JS/investorRoleFeed.js"></script>
 <script src="/public/JS/founderSideRoleFeed.js"></script> --}}
 <script src="/public/JS/feed.js"></script>
+<script src="/public/authenticationValidation.js" defer></script>
+
 <script>
         if (window.location.pathname.includes("pitchform")) {
             var script = document.createElement('script');
